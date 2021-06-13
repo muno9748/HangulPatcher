@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangulCraft", "WindowsFormsApp1\HangulCraft.csproj", "{C05EFF34-0635-4756-BEEB-1352FB88ED73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C05EFF34-0635-4756-BEEB-1352FB88ED73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C05EFF34-0635-4756-BEEB-1352FB88ED73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C05EFF34-0635-4756-BEEB-1352FB88ED73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C05EFF34-0635-4756-BEEB-1352FB88ED73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5EFBD1B8-B922-4747-BBEF-DA5308743942}
+	EndGlobalSection
+EndGlobal
