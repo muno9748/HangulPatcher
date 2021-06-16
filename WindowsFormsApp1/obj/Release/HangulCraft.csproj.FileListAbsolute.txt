@@ -7,3 +7,4 @@ C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Release\Hangu
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Release\HangulPatcher.pdb
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Release\HangulPatcher.exe
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Release\HangulPatcher.pdb
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Release\HangulCraft.csprojAssemblyReference.cache

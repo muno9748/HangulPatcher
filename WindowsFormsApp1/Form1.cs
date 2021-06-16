@@ -300,11 +300,12 @@ namespace HangulCraft {
                                 if (mDbl종성Tbl.Contains(charbuf[2].ToString())) {
                                     if (charbuf[2] == 'ㄲ') {
                                         SendText("{BACKSPACE}");
-                                        SendText(jamoToHangul(charbuf[0].ToString(), charbuf[1].ToString(), "ㄱ"));
+                                        SendText(jamoToHangul(charbuf[0].ToString(), charbuf[1].ToString(), ""));
+                                        char 초성 = charbuf[2];
                                         char 중성 = charbuf[3];
                                         charbuf.Clear();
-                                        
-                                        charbuf.Add('ㄱ');
+
+                                        charbuf.Add(초성);
                                         charbuf.Add(중성);
                                         SendText(jamoToHangul(charbuf[0].ToString(), charbuf[1].ToString(), ""));
                                     } else if (charbuf[2] == 'ㄳ') {
