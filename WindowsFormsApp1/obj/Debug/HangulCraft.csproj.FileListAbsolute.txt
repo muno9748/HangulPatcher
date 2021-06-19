@@ -1,10 +1,11 @@
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.Form1.resources
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.csproj.GenerateResource.cache
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.csproj.CoreCompileInputs.cache
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.csprojAssemblyReference.cache
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\HangulPatcher.exe.config
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\HangulPatcher.exe
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\HangulPatcher.pdb
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.Properties.Resources.resources
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulPatcher.exe
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulPatcher.pdb
+C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.UpdateAlert.resources

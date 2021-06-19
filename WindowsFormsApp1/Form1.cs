@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using HangulCraft.Properties;
 
 namespace HangulCraft {
     public partial class Form1: Form {
@@ -168,7 +169,7 @@ namespace HangulCraft {
                     if (key == Keys.LShiftKey)
                         return returnValue();
 
-                    if (key == Keys.T && !chatOpened) {
+                    if (key == Settings.Default.ChatKey && !chatOpened) {
                         chatOpened = true;
                         SetChatOpened(true);
                         return returnValue();
@@ -519,16 +520,23 @@ namespace HangulCraft {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
+            instance = this;
             log = logBox;
             hangulEnabledLabel = HangulMode;
             chatOpenedLabel = ChatEnabled;
             logEnabled = LogEnabled;
             pause = Pause;
+
+            List<Keys> keys = new List<Keys>(keyMap.Values);
+            ChatKeySelect.SelectedIndex = keys.IndexOf(Settings.Default.ChatKey);
+
             SetLogEnabled(true);
             SetHook();
             AddLog("Successfully Started Keyboard Hook Process.");
             SetChatOpened(false);
             SetHangulEnabled(false);
+
+            Updater.CheckUpdate();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
@@ -561,13 +569,14 @@ namespace HangulCraft {
             Dispose();
         }
 
+        public static Form1 instance;
         public static Label hangulEnabledLabel;
         public static Label chatOpenedLabel;
         public static CheckBox logEnabled;
         public static RichTextBox log;
         public static Button pause;
         public static bool paused = false;
-        private static void AddLog(string logMessage) {
+        public static void AddLog(string logMessage) {
             if (!logEnabled.Checked)
                 return;
             log.Text += DateTime.Now.ToString("[dd/MM/yy hh:mm:ss tt]") + " [INFO] " + logMessage + Environment.NewLine;
@@ -618,6 +627,61 @@ namespace HangulCraft {
             log.Text += DateTime.Now.ToString("[dd/MM/yy hh:mm:ss tt]") + " [INFO] Log " + (logEnabled.Checked ? "Enabled" : "Disabled") + Environment.NewLine;
             log.SelectionStart = log.TextLength;
             log.ScrollToCaret();
+        }
+        public static void Terminate() {
+            UnHook();
+            instance.Dispose();
+        }
+
+        private readonly Dictionary<string, Keys> keyMap = new Dictionary<string, Keys>() {
+            { "Grave", (Keys) '`' },
+            { "Tab", Keys.Tab },
+            { "Enter", Keys.Enter },
+            { "Q", Keys.Q },
+            { "W", Keys.W },
+            { "E", Keys.E },
+            { "R", Keys.R },
+            { "T", Keys.T },
+            { "Y", Keys.Y },
+            { "U", Keys.U },
+            { "I", Keys.I },
+            { "O", Keys.O },
+            { "P", Keys.P },
+            { "A", Keys.A },
+            { "S", Keys.S },
+            { "D", Keys.D },
+            { "F", Keys.F },
+            { "G", Keys.G },
+            { "H", Keys.H },
+            { "J", Keys.J },
+            { "K", Keys.K },
+            { "L", Keys.L },
+            { "Z", Keys.Z },
+            { "X", Keys.X },
+            { "C", Keys.C },
+            { "V", Keys.V },
+            { "B", Keys.B },
+            { "N", Keys.N },
+            { "M", Keys.M },
+            { "F1", Keys.F1 },
+            { "F2", Keys.F2 },
+            { "F3", Keys.F3 },
+            { "F4", Keys.F4 },
+            { "F5", Keys.F5 },
+            { "F6", Keys.F6 },
+            { "F7", Keys.F7 },
+            { "F8", Keys.F8 },
+            { "F9", Keys.F9 },
+            { "F10", Keys.F10 },
+            { "F11", Keys.F11 },
+            { "F12", Keys.F12 }
+        };
+
+        private void ChatKeySelect_SelectedValueChanged(object sender, EventArgs e) {
+            Keys key = keyMap[ChatKeySelect.SelectedItem.ToString()];
+            Settings.Default.ChatKey = key;
+            Settings.Default.Save();
+            AddLog($"Set ChatOpen Key to {ChatKeySelect.SelectedItem}");
         }
     }
 }

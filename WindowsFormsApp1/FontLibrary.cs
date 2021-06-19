@@ -19,14 +19,13 @@ namespace HangulCraft {
         }
 
         private void AddFontFromMemory() {
-            List<byte[]> fonts = new List<byte[]>();
-            fonts.Add(Properties.Resources.GmarketSansTTFLight);
+            int fontLength = Properties.Resources.GmarketSansTTFLight.Length;
+            byte[] fontdata = Properties.Resources.GmarketSansTTFLight;
 
-            foreach (byte[] font in fonts) {
-                IntPtr fontBuffer = Marshal.AllocCoTaskMem(font.Length);
-                Marshal.Copy(font, 0, fontBuffer, font.Length);
-                privateFont.AddMemoryFont(fontBuffer, font.Length);
-            }
+            IntPtr data = Marshal.AllocCoTaskMem(fontLength);
+            Marshal.Copy(fontdata, 0, data, fontLength);
+
+            privateFont.AddMemoryFont(data, fontLength);
         }
 
     }

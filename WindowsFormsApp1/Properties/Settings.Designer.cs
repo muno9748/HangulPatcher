@@ -22,5 +22,17 @@ namespace HangulCraft.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("T")]
+        public global::System.Windows.Forms.Keys ChatKey {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["ChatKey"]));
+            }
+            set {
+                this["ChatKey"] = value;
+            }
+        }
     }
 }
