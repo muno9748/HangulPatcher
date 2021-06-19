@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
+using HangulCraft.Properties;
 
 namespace HangulCraft {
     public class FontLibrary {
@@ -19,8 +19,8 @@ namespace HangulCraft {
         }
 
         private void AddFontFromMemory() {
-            int fontLength = Properties.Resources.GmarketSansTTFLight.Length;
-            byte[] fontdata = Properties.Resources.GmarketSansTTFLight;
+            int fontLength = Resources.GmarketSansTTFLight.Length;
+            byte[] fontdata = Resources.GmarketSansTTFLight;
 
             IntPtr data = Marshal.AllocCoTaskMem(fontLength);
             Marshal.Copy(fontdata, 0, data, fontLength);

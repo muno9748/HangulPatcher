@@ -38,7 +38,7 @@ namespace HangulCraft {
             // 
             // Exit
             // 
-            this.Exit.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Exit.Font = new System.Drawing.Font(FontLibrary.Families[0], 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.Exit.Location = new System.Drawing.Point(470, 129);
             this.Exit.Name = "Exit";
             this.Exit.Size = new System.Drawing.Size(118, 23);
@@ -61,7 +61,7 @@ namespace HangulCraft {
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 30.25F);
+            this.label1.Font = new System.Drawing.Font(FontLibrary.Families[0], 30.25F);
             this.label1.Location = new System.Drawing.Point(3, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(352, 47);
@@ -72,7 +72,7 @@ namespace HangulCraft {
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 10.25F);
+            this.label2.Font = new System.Drawing.Font(FontLibrary.Families[0], 10.25F);
             this.label2.Location = new System.Drawing.Point(8, 77);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(218, 32);
@@ -84,7 +84,7 @@ namespace HangulCraft {
             // 
             this.downloadLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
             this.downloadLink.AutoSize = true;
-            this.downloadLink.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.downloadLink.Font = new System.Drawing.Font(FontLibrary.Families[0], 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.downloadLink.LinkColor = System.Drawing.SystemColors.Highlight;
             this.downloadLink.Location = new System.Drawing.Point(9, 111);
             this.downloadLink.Name = "downloadLink";
@@ -99,7 +99,7 @@ namespace HangulCraft {
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 10.25F);
+            this.label3.Font = new System.Drawing.Font(FontLibrary.Families[0], 10.25F);
             this.label3.Location = new System.Drawing.Point(97, 111);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(196, 16);
