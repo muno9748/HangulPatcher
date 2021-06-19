@@ -14,7 +14,6 @@ namespace HangulCraft {
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(EndPoint);
             request.Method = "GET";
             request.Timeout = 30 * 1000;
-            request.Headers.Add("Authorization", "BASIC SGVsbG8=");
 
             using (HttpWebResponse resp = (HttpWebResponse) request.GetResponse()) {
                 HttpStatusCode status = resp.StatusCode;
