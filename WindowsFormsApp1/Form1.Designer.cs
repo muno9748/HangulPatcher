@@ -48,7 +48,7 @@ namespace HangulCraft
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Font = new System.Drawing.Font(FontLibrary.Families[0], 30.25F);
+            this.label.Font = new System.Drawing.Font(FontLibrary.globalFont, 30.25F);
             this.label.Location = new System.Drawing.Point(4, 9);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(510, 47);
@@ -59,7 +59,7 @@ namespace HangulCraft
             // 
             // ExitButton
             // 
-            this.ExitButton.Font = new System.Drawing.Font(FontLibrary.Families[0], 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.ExitButton.Font = new System.Drawing.Font(FontLibrary.globalFont, 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.ExitButton.Location = new System.Drawing.Point(564, 510);
             this.ExitButton.Name = "ExitButton";
             this.ExitButton.Size = new System.Drawing.Size(150, 62);
@@ -71,7 +71,7 @@ namespace HangulCraft
             // HangulMode
             // 
             this.HangulMode.AutoSize = true;
-            this.HangulMode.Font = new System.Drawing.Font(FontLibrary.Families[0], 12.25F);
+            this.HangulMode.Font = new System.Drawing.Font(FontLibrary.globalFont, 12.25F);
             this.HangulMode.Location = new System.Drawing.Point(8, 79);
             this.HangulMode.Name = "HangulMode";
             this.HangulMode.Size = new System.Drawing.Size(183, 20);
@@ -82,7 +82,7 @@ namespace HangulCraft
             // ChatEnabled
             // 
             this.ChatEnabled.AutoSize = true;
-            this.ChatEnabled.Font = new System.Drawing.Font(FontLibrary.Families[0], 12.25F);
+            this.ChatEnabled.Font = new System.Drawing.Font(FontLibrary.globalFont, 12.25F);
             this.ChatEnabled.Location = new System.Drawing.Point(8, 99);
             this.ChatEnabled.Name = "ChatEnabled";
             this.ChatEnabled.Size = new System.Drawing.Size(135, 20);
@@ -103,7 +103,7 @@ namespace HangulCraft
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font(FontLibrary.Families[0], 11.25F);
+            this.label1.Font = new System.Drawing.Font(FontLibrary.globalFont, 11.25F);
             this.label1.Location = new System.Drawing.Point(9, 558);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(303, 17);
@@ -114,7 +114,7 @@ namespace HangulCraft
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font(FontLibrary.Families[0], 11.25F);
+            this.label3.Font = new System.Drawing.Font(FontLibrary.globalFont, 11.25F);
             this.label3.ForeColor = System.Drawing.Color.Gray;
             this.label3.Location = new System.Drawing.Point(9, 535);
             this.label3.Name = "label3";
@@ -136,7 +136,7 @@ namespace HangulCraft
             // LogEnabled
             // 
             this.LogEnabled.AutoSize = true;
-            this.LogEnabled.Font = new System.Drawing.Font(FontLibrary.Families[0], 8.999999F);
+            this.LogEnabled.Font = new System.Drawing.Font(FontLibrary.globalFont, 8.999999F);
             this.LogEnabled.Location = new System.Drawing.Point(14, 134);
             this.LogEnabled.Name = "LogEnabled";
             this.LogEnabled.Size = new System.Drawing.Size(51, 18);
@@ -147,7 +147,7 @@ namespace HangulCraft
             // 
             // Pause
             // 
-            this.Pause.Font = new System.Drawing.Font(FontLibrary.Families[0], 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Pause.Font = new System.Drawing.Font(FontLibrary.globalFont, 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.Pause.Location = new System.Drawing.Point(408, 510);
             this.Pause.Name = "Pause";
             this.Pause.Size = new System.Drawing.Size(150, 62);
@@ -159,7 +159,7 @@ namespace HangulCraft
             // ChatKeySelect
             // 
             this.ChatKeySelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ChatKeySelect.Font = new System.Drawing.Font(FontLibrary.Families[0], 8F);
+            this.ChatKeySelect.Font = new System.Drawing.Font(FontLibrary.globalFont, 8F);
             this.ChatKeySelect.FormattingEnabled = true;
             this.ChatKeySelect.Items.AddRange(new object[] {
             "Grave",
@@ -212,7 +212,7 @@ namespace HangulCraft
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font(FontLibrary.Families[0], 12.25F);
+            this.label2.Font = new System.Drawing.Font(FontLibrary.globalFont, 12.25F);
             this.label2.Location = new System.Drawing.Point(8, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(135, 20);

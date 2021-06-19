@@ -225,15 +225,15 @@ namespace HangulCraft {
                             SendText(charbuf[0].ToString());
                             if (!m초성Tbl.Contains(charbuf[0].ToString())) {
                                 charbuf.Clear();
-                                
                             }
                         } else if (charbuf.Count == 2) {
                             if (!m중성Tbl.Contains(charbuf[1].ToString())) {
                                 SendText("{BACKSPACE}");
                                 SendText(charbuf[0].ToString());
-                                SendText(charbuf[1].ToString());
+                                char 초성 = charbuf[1];
                                 charbuf.Clear();
-                                
+                                charbuf.Add(초성);
+                                SendText(초성.ToString());
                             } else {
                                 SendText("{BACKSPACE}");
                                 SendText(jamoToHangul(charbuf[0].ToString(), charbuf[1].ToString(), ""));
