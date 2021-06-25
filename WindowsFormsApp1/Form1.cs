@@ -528,7 +528,7 @@ namespace HangulCraft {
             pause = Pause;
 
             List<Keys> keys = new List<Keys>(keyMap.Values);
-            ChatKeySelect.SelectedIndex = keys.IndexOf(Settings.Default.ChatKey);
+            //ChatKeySelect.SelectedIndex = keys.IndexOf(Settings.Default.ChatKey);
 
             SetLogEnabled(true);
             SetHook();
@@ -677,11 +677,26 @@ namespace HangulCraft {
             { "F12", Keys.F12 }
         };
 
-        private void ChatKeySelect_SelectedValueChanged(object sender, EventArgs e) {
-            Keys key = keyMap[ChatKeySelect.SelectedItem.ToString()];
-            Settings.Default.ChatKey = key;
-            Settings.Default.Save();
-            AddLog($"Set ChatOpen Key to {ChatKeySelect.SelectedItem}");
+        bool isCaptureingKey = false;
+        Keys capturedKey = Keys.T;
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            isCaptureingKey = !isCaptureingKey;
+            if(isCaptureingKey)
+                captureButton.Text = "키 녹화중.. 클릭해 취소하세요..";
+            else
+                captureButton.Text = "BIND: " + capturedKey.ToString();
+        }
+
+        private void captureButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(isCaptureingKey)
+            {
+                capturedKey = e.KeyData;
+                isCaptureingKey = false;
+                captureButton.Text = "BIND: " + capturedKey.ToString();
+            }
         }
     }
 }

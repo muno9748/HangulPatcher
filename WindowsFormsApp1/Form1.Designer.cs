@@ -40,18 +40,17 @@ namespace HangulCraft
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.LogEnabled = new System.Windows.Forms.CheckBox();
             this.Pause = new System.Windows.Forms.Button();
-            this.ChatKeySelect = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.captureButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Font = new System.Drawing.Font(FontLibrary.globalFont, 30.25F);
             this.label.Location = new System.Drawing.Point(4, 9);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(510, 47);
+            this.label.Size = new System.Drawing.Size(157, 12);
             this.label.TabIndex = 0;
             this.label.Text = "키보드 입력을 캡쳐중입니다";
             this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -59,7 +58,6 @@ namespace HangulCraft
             // 
             // ExitButton
             // 
-            this.ExitButton.Font = new System.Drawing.Font(FontLibrary.globalFont, 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.ExitButton.Location = new System.Drawing.Point(564, 510);
             this.ExitButton.Name = "ExitButton";
             this.ExitButton.Size = new System.Drawing.Size(150, 62);
@@ -71,10 +69,9 @@ namespace HangulCraft
             // HangulMode
             // 
             this.HangulMode.AutoSize = true;
-            this.HangulMode.Font = new System.Drawing.Font(FontLibrary.globalFont, 12.25F);
             this.HangulMode.Location = new System.Drawing.Point(8, 79);
             this.HangulMode.Name = "HangulMode";
-            this.HangulMode.Size = new System.Drawing.Size(183, 20);
+            this.HangulMode.Size = new System.Drawing.Size(137, 12);
             this.HangulMode.TabIndex = 2;
             this.HangulMode.Text = "한글 활성화: 비활성화됨";
             this.HangulMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -82,10 +79,9 @@ namespace HangulCraft
             // ChatEnabled
             // 
             this.ChatEnabled.AutoSize = true;
-            this.ChatEnabled.Font = new System.Drawing.Font(FontLibrary.globalFont, 12.25F);
             this.ChatEnabled.Location = new System.Drawing.Point(8, 99);
             this.ChatEnabled.Name = "ChatEnabled";
-            this.ChatEnabled.Size = new System.Drawing.Size(135, 20);
+            this.ChatEnabled.Size = new System.Drawing.Size(101, 12);
             this.ChatEnabled.TabIndex = 3;
             this.ChatEnabled.Text = "채팅창 상태: 닫힘";
             this.ChatEnabled.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -103,10 +99,9 @@ namespace HangulCraft
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font(FontLibrary.globalFont, 11.25F);
             this.label1.Location = new System.Drawing.Point(9, 558);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(303, 17);
+            this.label1.Size = new System.Drawing.Size(258, 12);
             this.label1.TabIndex = 6;
             this.label1.Text = "한영 전환 키: 한/영 (Ctrl가 아닌 키보드 한/영)\r\n";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -114,11 +109,10 @@ namespace HangulCraft
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font(FontLibrary.globalFont, 11.25F);
             this.label3.ForeColor = System.Drawing.Color.Gray;
             this.label3.Location = new System.Drawing.Point(9, 535);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(157, 17);
+            this.label3.Size = new System.Drawing.Size(118, 12);
             this.label3.TabIndex = 7;
             this.label3.Text = "© Made by ilyMuno";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -136,10 +130,9 @@ namespace HangulCraft
             // LogEnabled
             // 
             this.LogEnabled.AutoSize = true;
-            this.LogEnabled.Font = new System.Drawing.Font(FontLibrary.globalFont, 8.999999F);
             this.LogEnabled.Location = new System.Drawing.Point(14, 134);
             this.LogEnabled.Name = "LogEnabled";
-            this.LogEnabled.Size = new System.Drawing.Size(51, 18);
+            this.LogEnabled.Size = new System.Drawing.Size(45, 16);
             this.LogEnabled.TabIndex = 9;
             this.LogEnabled.Text = "Log";
             this.LogEnabled.UseVisualStyleBackColor = true;
@@ -147,7 +140,6 @@ namespace HangulCraft
             // 
             // Pause
             // 
-            this.Pause.Font = new System.Drawing.Font(FontLibrary.globalFont, 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.Pause.Location = new System.Drawing.Point(408, 510);
             this.Pause.Name = "Pause";
             this.Pause.Size = new System.Drawing.Size(150, 62);
@@ -156,77 +148,34 @@ namespace HangulCraft
             this.Pause.UseVisualStyleBackColor = true;
             this.Pause.Click += new System.EventHandler(this.Pause_Click);
             // 
-            // ChatKeySelect
-            // 
-            this.ChatKeySelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ChatKeySelect.Font = new System.Drawing.Font(FontLibrary.globalFont, 8F);
-            this.ChatKeySelect.FormattingEnabled = true;
-            this.ChatKeySelect.Items.AddRange(new object[] {
-            "Grave",
-            "Tab",
-            "Enter",
-            "Q",
-            "W",
-            "E",
-            "R",
-            "T",
-            "Y",
-            "U",
-            "I",
-            "O",
-            "P",
-            "A",
-            "S",
-            "D",
-            "F",
-            "G",
-            "H",
-            "J",
-            "K",
-            "L",
-            "Z",
-            "X",
-            "C",
-            "V",
-            "B",
-            "N",
-            "M",
-            "F1",
-            "F2",
-            "F3",
-            "F4",
-            "F5",
-            "F6",
-            "F7",
-            "F8",
-            "F9",
-            "F10",
-            "F11",
-            "F12"});
-            this.ChatKeySelect.Location = new System.Drawing.Point(144, 53);
-            this.ChatKeySelect.Name = "ChatKeySelect";
-            this.ChatKeySelect.Size = new System.Drawing.Size(73, 21);
-            this.ChatKeySelect.TabIndex = 11;
-            this.ChatKeySelect.SelectedValueChanged += new System.EventHandler(this.ChatKeySelect_SelectedValueChanged);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font(FontLibrary.globalFont, 12.25F);
             this.label2.Location = new System.Drawing.Point(8, 55);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(135, 20);
+            this.label2.Size = new System.Drawing.Size(101, 12);
             this.label2.TabIndex = 12;
             this.label2.Text = "채팅 오픈키 설정:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // captureButton
+            // 
+            this.captureButton.Location = new System.Drawing.Point(115, 50);
+            this.captureButton.Name = "captureButton";
+            this.captureButton.Size = new System.Drawing.Size(217, 23);
+            this.captureButton.TabIndex = 13;
+            this.captureButton.Text = "BIND: T";
+            this.captureButton.UseVisualStyleBackColor = true;
+            this.captureButton.Click += new System.EventHandler(this.button1_Click);
+            this.captureButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.captureButton_KeyDown);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(738, 583);
+            this.Controls.Add(this.captureButton);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.ChatKeySelect);
             this.Controls.Add(this.Pause);
             this.Controls.Add(this.LogEnabled);
             this.Controls.Add(this.pictureBox1);
@@ -263,8 +212,8 @@ namespace HangulCraft
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.CheckBox LogEnabled;
         private System.Windows.Forms.Button Pause;
-        private System.Windows.Forms.ComboBox ChatKeySelect;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button captureButton;
     }
 }
 
