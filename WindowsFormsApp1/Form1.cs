@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using HangulCraft.Properties;
+using System.IO;
 
 namespace HangulCraft {
     public partial class Form1: Form {
@@ -132,6 +133,8 @@ namespace HangulCraft {
         public static bool isHangul = false;
         public static bool isShift = false;
         public static int skips = 0;
+        bool isCaptureingKey = false;
+        Keys capturedKey = Keys.T;
 
         public static void SendText(string msg) {
             skips++;
@@ -526,6 +529,11 @@ namespace HangulCraft {
             chatOpenedLabel = ChatEnabled;
             logEnabled = LogEnabled;
             pause = Pause;
+            try
+            {
+                capturedKey = (Keys)Enum.Parse(typeof(Keys), File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\HangulPatcher.txt"));
+                captureButton.Text = "BIND: " + Enum.GetName(typeof(Keys), capturedKey);
+            } catch {}
 
             List<Keys> keys = new List<Keys>(keyMap.Values);
             //ChatKeySelect.SelectedIndex = keys.IndexOf(Settings.Default.ChatKey);
@@ -677,16 +685,23 @@ namespace HangulCraft {
             { "F12", Keys.F12 }
         };
 
-        bool isCaptureingKey = false;
-        Keys capturedKey = Keys.T;
-
         private void button1_Click(object sender, EventArgs e)
         {
             isCaptureingKey = !isCaptureingKey;
-            if(isCaptureingKey)
+            if (isCaptureingKey)
+            {
                 captureButton.Text = "키 녹화중.. 클릭해 취소하세요..";
+                button1.Enabled = false;
+                button2.Enabled = false;
+                button3.Enabled = false;
+            }
             else
-                captureButton.Text = "BIND: " + capturedKey.ToString();
+            {
+                button1.Enabled = true;
+                button2.Enabled = true;
+                button3.Enabled = true;
+                captureButton.Text = "BIND: " + Enum.GetName(typeof(Keys), capturedKey);
+            }
         }
 
         private void captureButton_KeyDown(object sender, KeyEventArgs e)
@@ -694,9 +709,37 @@ namespace HangulCraft {
             if(isCaptureingKey)
             {
                 capturedKey = e.KeyData;
+                File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\HangulPatcher.txt", Enum.GetName(typeof(Keys), capturedKey));
                 isCaptureingKey = false;
-                captureButton.Text = "BIND: " + capturedKey.ToString();
+                captureButton.Text = "BIND: " + Enum.GetName(typeof(Keys), capturedKey);
+                button1.Enabled = true;
+                button2.Enabled = true;
+                button3.Enabled = true;
             }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            capturedKey = Keys.LControlKey;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = false;
+            capturedKey = Keys.RControlKey;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = true;
+            button2.Enabled = false;
+            button3.Enabled = true;
+            capturedKey = Keys.Alt;
         }
     }
 }

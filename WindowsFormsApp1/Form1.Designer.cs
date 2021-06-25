@@ -42,6 +42,10 @@ namespace HangulCraft
             this.Pause = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.captureButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -169,11 +173,54 @@ namespace HangulCraft
             this.captureButton.Click += new System.EventHandler(this.button1_Click);
             this.captureButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.captureButton_KeyDown);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(338, 50);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(119, 23);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "CTRL";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(463, 50);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(127, 23);
+            this.button2.TabIndex = 15;
+            this.button2.Text = "ALT";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(338, 74);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(119, 23);
+            this.button3.TabIndex = 16;
+            this.button3.Text = "RCTRL";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 35);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(500, 12);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "키보드 입력 받기중 CTRL, ALT, RCTRL 버튼은 불안정하니 되도록이면 사용을 금해주세요.";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(738, 583);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.captureButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.Pause);
@@ -214,6 +261,10 @@ namespace HangulCraft
         private System.Windows.Forms.Button Pause;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button captureButton;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label4;
     }
 }
 
