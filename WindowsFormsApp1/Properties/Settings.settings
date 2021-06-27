@@ -5,5 +5,8 @@
     <Setting Name="ChatKey" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">T</Value>
     </Setting>
+    <Setting Name="HangulKey" Type="System.Windows.Forms.Keys" Scope="User">
+      <Value Profile="(Default)">KanaMode</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

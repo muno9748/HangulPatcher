@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using HangulCraft.Properties;
-using System.IO;
 
 namespace HangulCraft {
     public partial class Form1: Form {
@@ -133,8 +132,7 @@ namespace HangulCraft {
         public static bool isHangul = false;
         public static bool isShift = false;
         public static int skips = 0;
-        bool isCaptureingKey = false;
-        Keys capturedKey = Keys.T;
+        static bool isCapturingKey = false;
 
         public static void SendText(string msg) {
             skips++;
@@ -148,7 +146,7 @@ namespace HangulCraft {
 
             if (code >= 0) {
                 if (wParam == (IntPtr) WM_KEYDOWN) {
-                    if(paused) {
+                    if(paused || isCapturingKey) {
                         return returnValue();
                     }
 
@@ -160,16 +158,13 @@ namespace HangulCraft {
                     int vkCode = Marshal.ReadInt32(lParam);
                     Keys key = (Keys) vkCode;
 
-                    if (key == Keys.HangulMode && chatOpened) {
+                    if (key == Settings.Default.HangulKey && chatOpened) {
                         isHangul = !isHangul;
                         SetHangulEnabled(isHangul);
                         return (IntPtr) 1;
                     }
 
                     if ((ModifierKeys & Keys.Control) != 0 || (ModifierKeys & Keys.Alt) != 0)
-                        return returnValue();
-
-                    if (key == Keys.LShiftKey)
                         return returnValue();
 
                     if (key == Settings.Default.ChatKey && !chatOpened) {
@@ -522,6 +517,8 @@ namespace HangulCraft {
             return CallNextHookEx(hhook, code, (int) wParam, lParam);
         }
 
+        private static Keys[] reversedHangulMap = { Keys.HangulMode, Keys.LControlKey, Keys.Alt };
+
         private void Form1_Load(object sender, EventArgs e) {
             instance = this;
             log = logBox;
@@ -529,14 +526,10 @@ namespace HangulCraft {
             chatOpenedLabel = ChatEnabled;
             logEnabled = LogEnabled;
             pause = Pause;
-            try
-            {
-                capturedKey = (Keys)Enum.Parse(typeof(Keys), File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\HangulPatcher.txt"));
-                captureButton.Text = "BIND: " + Enum.GetName(typeof(Keys), capturedKey);
-            } catch {}
+            chatOpenKeyInfo = ChatOpenKeyInfo;
 
-            List<Keys> keys = new List<Keys>(keyMap.Values);
-            //ChatKeySelect.SelectedIndex = keys.IndexOf(Settings.Default.ChatKey);
+            ChatOpenKeyInfo.Text = "현재 채팅 오픈 키: " + GetKeyName(Settings.Default.ChatKey);
+            comboBox1.SelectedIndex = Array.IndexOf(new List<Keys>(HangulKeyMap.Values).ToArray(), Settings.Default.HangulKey);
 
             SetLogEnabled(true);
             SetHook();
@@ -551,7 +544,7 @@ namespace HangulCraft {
             UnHook();
         }
 
-        private void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void Form1_MouseDown(object sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
@@ -583,6 +576,7 @@ namespace HangulCraft {
         public static CheckBox logEnabled;
         public static RichTextBox log;
         public static Button pause;
+        public static Label chatOpenKeyInfo;
         public static bool paused = false;
         public static void AddLog(string logMessage) {
             if (!logEnabled.Checked)
@@ -641,105 +635,57 @@ namespace HangulCraft {
             instance.Dispose();
         }
 
-        private readonly Dictionary<string, Keys> keyMap = new Dictionary<string, Keys>() {
-            { "Grave", (Keys) '`' },
-            { "Tab", Keys.Tab },
-            { "Enter", Keys.Enter },
-            { "Q", Keys.Q },
-            { "W", Keys.W },
-            { "E", Keys.E },
-            { "R", Keys.R },
-            { "T", Keys.T },
-            { "Y", Keys.Y },
-            { "U", Keys.U },
-            { "I", Keys.I },
-            { "O", Keys.O },
-            { "P", Keys.P },
-            { "A", Keys.A },
-            { "S", Keys.S },
-            { "D", Keys.D },
-            { "F", Keys.F },
-            { "G", Keys.G },
-            { "H", Keys.H },
-            { "J", Keys.J },
-            { "K", Keys.K },
-            { "L", Keys.L },
-            { "Z", Keys.Z },
-            { "X", Keys.X },
-            { "C", Keys.C },
-            { "V", Keys.V },
-            { "B", Keys.B },
-            { "N", Keys.N },
-            { "M", Keys.M },
-            { "F1", Keys.F1 },
-            { "F2", Keys.F2 },
-            { "F3", Keys.F3 },
-            { "F4", Keys.F4 },
-            { "F5", Keys.F5 },
-            { "F6", Keys.F6 },
-            { "F7", Keys.F7 },
-            { "F8", Keys.F8 },
-            { "F9", Keys.F9 },
-            { "F10", Keys.F10 },
-            { "F11", Keys.F11 },
-            { "F12", Keys.F12 }
-        };
-
         private void button1_Click(object sender, EventArgs e)
         {
-            isCaptureingKey = !isCaptureingKey;
-            if (isCaptureingKey)
+            isCapturingKey = !isCapturingKey;
+            if (isCapturingKey)
             {
                 captureButton.Text = "키 녹화중.. 클릭해 취소하세요..";
-                button1.Enabled = false;
-                button2.Enabled = false;
-                button3.Enabled = false;
-            }
-            else
-            {
-                button1.Enabled = true;
-                button2.Enabled = true;
-                button3.Enabled = true;
-                captureButton.Text = "BIND: " + Enum.GetName(typeof(Keys), capturedKey);
+            } else {
+                captureButton.Text = "키 설정하기";
             }
         }
+
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(Keys key);
 
         private void captureButton_KeyDown(object sender, KeyEventArgs e)
         {
-            if(isCaptureingKey)
+            if(isCapturingKey)
             {
-                capturedKey = e.KeyData;
-                File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\HangulPatcher.txt", Enum.GetName(typeof(Keys), capturedKey));
-                isCaptureingKey = false;
-                captureButton.Text = "BIND: " + Enum.GetName(typeof(Keys), capturedKey);
-                button1.Enabled = true;
-                button2.Enabled = true;
-                button3.Enabled = true;
+                if (e.Alt) {
+                    Settings.Default.ChatKey = Keys.Alt;
+                } else if (e.Control) {
+                    Settings.Default.ChatKey = Keys.LControlKey;
+                } else if (e.Shift) {
+                    if (GetAsyncKeyState(Keys.LShiftKey) < 0)
+                        Settings.Default.ChatKey = Keys.LShiftKey;
+                    else
+                        Settings.Default.ChatKey = Keys.RShiftKey;
+                } else {
+                    Settings.Default.ChatKey = e.KeyData;
+                }
+                isCapturingKey = false;
+                ChatOpenKeyInfo.Text = "현재 채팅 오픈 키: " + GetKeyName(Settings.Default.ChatKey);
+                captureButton.Text = "키 설정하기";
+                Settings.Default.Save();
             }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            button1.Enabled = false;
-            button2.Enabled = true;
-            button3.Enabled = true;
-            capturedKey = Keys.LControlKey;
+        private static string GetKeyName(Keys key) {
+            string keyName = Enum.GetName(typeof(Keys), key);
+            return keyName;
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = true;
-            button2.Enabled = true;
-            button3.Enabled = false;
-            capturedKey = Keys.RControlKey;
-        }
+        public static Dictionary<string, Keys> HangulKeyMap = new Dictionary<string, Keys>() {
+            { "한/영", Keys.HangulMode },
+            { "Control", Keys.LControlKey },
+            { "Alt", Keys.Alt }
+        };
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = true;
-            button2.Enabled = false;
-            button3.Enabled = true;
-            capturedKey = Keys.Alt;
+        private void comboBox1_SelectedValueChanged(object sender, EventArgs e) {
+            Settings.Default.HangulKey = HangulKeyMap[comboBox1.SelectedItem.ToString()];
+            Settings.Default.Save();
         }
     }
 }
