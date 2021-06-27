@@ -34,5 +34,17 @@ namespace HangulCraft.Properties {
                 this["ChatKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("KanaMode")]
+        public global::System.Windows.Forms.Keys HangulKey {
+            get {
+                return ((global::System.Windows.Forms.Keys)(this["HangulKey"]));
+            }
+            set {
+                this["HangulKey"] = value;
+            }
+        }
     }
 }
