@@ -6,7 +6,7 @@ using System.Windows.Forms;
 namespace HangulCraft {
     public class Updater {
         public static readonly string EndPoint = "https://raw.githubusercontent.com/muno9748/HangulPatcher/master/LatestVersion";
-        public static readonly string currentVersion = "1.2.0";
+        public static readonly string currentVersion = "1.2.1";
         public static string latestVersion;
         public static void CheckUpdate() {
             string responseText = String.Empty;

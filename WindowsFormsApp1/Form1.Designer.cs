@@ -56,7 +56,7 @@ namespace HangulCraft
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Font = new System.Drawing.Font(FontLibrary.globalFont, 35F);
+            this.label.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 35F);
             this.label.Location = new System.Drawing.Point(4, 9);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(589, 54);
@@ -67,7 +67,7 @@ namespace HangulCraft
             // 
             // ExitButton
             // 
-            this.ExitButton.Font = new System.Drawing.Font(FontLibrary.globalFont, 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ExitButton.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ExitButton.Location = new System.Drawing.Point(564, 510);
             this.ExitButton.Name = "ExitButton";
             this.ExitButton.Size = new System.Drawing.Size(150, 62);
@@ -79,7 +79,7 @@ namespace HangulCraft
             // HangulMode
             // 
             this.HangulMode.AutoSize = true;
-            this.HangulMode.Font = new System.Drawing.Font(FontLibrary.globalFont, 10F);
+            this.HangulMode.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 10F);
             this.HangulMode.Location = new System.Drawing.Point(353, 300);
             this.HangulMode.Name = "HangulMode";
             this.HangulMode.Size = new System.Drawing.Size(149, 16);
@@ -90,7 +90,7 @@ namespace HangulCraft
             // ChatEnabled
             // 
             this.ChatEnabled.AutoSize = true;
-            this.ChatEnabled.Font = new System.Drawing.Font(FontLibrary.globalFont, 10F);
+            this.ChatEnabled.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 10F);
             this.ChatEnabled.Location = new System.Drawing.Point(353, 316);
             this.ChatEnabled.Name = "ChatEnabled";
             this.ChatEnabled.Size = new System.Drawing.Size(110, 16);
@@ -111,7 +111,7 @@ namespace HangulCraft
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font(FontLibrary.globalFont, 15F);
+            this.label3.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 15F);
             this.label3.ForeColor = System.Drawing.Color.Gray;
             this.label3.Location = new System.Drawing.Point(737, 549);
             this.label3.Name = "label3";
@@ -133,7 +133,7 @@ namespace HangulCraft
             // LogEnabled
             // 
             this.LogEnabled.AutoSize = true;
-            this.LogEnabled.Font = new System.Drawing.Font(FontLibrary.globalFont, 9F);
+            this.LogEnabled.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 9F);
             this.LogEnabled.Location = new System.Drawing.Point(14, 84);
             this.LogEnabled.Name = "LogEnabled";
             this.LogEnabled.Size = new System.Drawing.Size(51, 18);
@@ -144,7 +144,7 @@ namespace HangulCraft
             // 
             // Pause
             // 
-            this.Pause.Font = new System.Drawing.Font(FontLibrary.globalFont, 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Pause.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Pause.Location = new System.Drawing.Point(408, 510);
             this.Pause.Name = "Pause";
             this.Pause.Size = new System.Drawing.Size(150, 62);
@@ -156,7 +156,7 @@ namespace HangulCraft
             // ChatOpenKeyInfo
             // 
             this.ChatOpenKeyInfo.AutoSize = true;
-            this.ChatOpenKeyInfo.Font = new System.Drawing.Font(FontLibrary.globalFont, 10F);
+            this.ChatOpenKeyInfo.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 10F);
             this.ChatOpenKeyInfo.Location = new System.Drawing.Point(6, 19);
             this.ChatOpenKeyInfo.Name = "ChatOpenKeyInfo";
             this.ChatOpenKeyInfo.Size = new System.Drawing.Size(97, 16);
@@ -179,7 +179,7 @@ namespace HangulCraft
             // 
             this.groupBox1.Controls.Add(this.captureButton);
             this.groupBox1.Controls.Add(this.ChatOpenKeyInfo);
-            this.groupBox1.Font = new System.Drawing.Font(FontLibrary.globalFont, 9F);
+            this.groupBox1.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 9F);
             this.groupBox1.Location = new System.Drawing.Point(732, 68);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(284, 72);
@@ -198,7 +198,7 @@ namespace HangulCraft
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font(FontLibrary.globalFont, 30F);
+            this.label5.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 30F);
             this.label5.Location = new System.Drawing.Point(733, 8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(193, 46);
@@ -218,7 +218,7 @@ namespace HangulCraft
             // 
             this.groupBox2.Controls.Add(this.comboBox1);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Font = new System.Drawing.Font(FontLibrary.globalFont, 9F);
+            this.groupBox2.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 9F);
             this.groupBox2.Location = new System.Drawing.Point(732, 146);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(284, 47);
@@ -229,7 +229,7 @@ namespace HangulCraft
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.Font = new System.Drawing.Font(FontLibrary.globalFont, 8F);
+            this.comboBox1.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 8F);
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "한/영",
@@ -244,7 +244,7 @@ namespace HangulCraft
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font(FontLibrary.globalFont, 11F);
+            this.label2.Font = new System.Drawing.Font("G마켓 산스 TTF Light", 11F);
             this.label2.Location = new System.Drawing.Point(6, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(103, 17);

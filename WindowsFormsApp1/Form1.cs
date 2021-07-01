@@ -55,7 +55,29 @@ namespace HangulCraft {
         private static readonly string m초성Tbl = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
         private static readonly string m중성Tbl = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
         private static readonly string m종성Tbl = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
-        private static readonly string mDbl종성Tbl = "ㄲㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄ";
+        private static readonly string mDbl종성Tbl = "ㄲㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄㅆ";
+        private static readonly List<Keys> controlKeys = new List<Keys>() {
+            Keys.LControlKey,
+            Keys.RControlKey,
+            Keys.HanjaMode,
+            Keys.Capital,
+            Keys.NumLock,
+            Keys.Scroll,
+            Keys.F1,
+            Keys.F2,
+            Keys.F3,
+            Keys.F4,
+            Keys.F5,
+            Keys.F6,
+            Keys.F7,
+            Keys.F8,
+            Keys.F9,
+            Keys.F10,
+            Keys.F11,
+            Keys.F12,
+            Keys.LShiftKey,
+            Keys.RShiftKey,
+        };
         private static readonly ushort mUniCode한글Base = 0xAC00;
         private static readonly Dictionary<Keys, char> hangulMap = new Dictionary<Keys, char>() {
             { Keys.Q, 'ㅂ' },
@@ -185,14 +207,14 @@ namespace HangulCraft {
                         SetChatOpened(false);
                         SetHangulEnabled(false);
                         charbuf.Clear();
-                        
+
                         return returnValue();
                     }
 
                     if (!chatOpened || !isHangul)
                         return returnValue();
 
-                    isShift = (ModifierKeys & Keys.Shift) != 0;
+                    isShift = GetAsyncKeyState(Keys.LShiftKey) < 0;
 
                     if (key == Keys.Back) {
                         if (charbuf.Count == 0)
@@ -290,7 +312,7 @@ namespace HangulCraft {
                                     charbuf.Clear();
                                     
                                 }
-                            } else if (m초성Tbl.Contains(charbuf[2].ToString())) {
+                            } else if (m초성Tbl.Contains(charbuf[2].ToString()) || charbuf[2].ToString() == "ㄲ" || charbuf[2].ToString() == "ㅆ") {
                                 SendText("{BACKSPACE}");
                                 SendText(jamoToHangul(charbuf[0].ToString(), charbuf[1].ToString(), charbuf[2].ToString()));
                             }
@@ -506,6 +528,10 @@ namespace HangulCraft {
 
                         return (IntPtr) 1;
                     } else {
+                        if (controlKeys.Contains(key)) {
+                            return returnValue();
+                        }
+
                         charbuf.Clear();
 
                         return CallNextHookEx(hhook, code, (int) wParam, lParam);
@@ -516,8 +542,6 @@ namespace HangulCraft {
             }
             return CallNextHookEx(hhook, code, (int) wParam, lParam);
         }
-
-        private static Keys[] reversedHangulMap = { Keys.HangulMode, Keys.LControlKey, Keys.Alt };
 
         private void Form1_Load(object sender, EventArgs e) {
             instance = this;
@@ -635,8 +659,15 @@ namespace HangulCraft {
             instance.Dispose();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
+        private void button1_Click(object sender, EventArgs e) {
+            bool isMouse = e is MouseEventArgs;
+
+            if (isCapturingKey && !isMouse) {
+                Settings.Default.ChatKey = Keys.Enter;
+                ChatOpenKeyInfo.Text = "현재 채팅 오픈 키: " + GetKeyName(Settings.Default.ChatKey);
+                Settings.Default.Save();
+            }
+
             isCapturingKey = !isCapturingKey;
             if (isCapturingKey)
             {
@@ -648,7 +679,6 @@ namespace HangulCraft {
 
         [DllImport("user32.dll")]
         private static extern short GetAsyncKeyState(Keys key);
-
         private void captureButton_KeyDown(object sender, KeyEventArgs e)
         {
             if(isCapturingKey)

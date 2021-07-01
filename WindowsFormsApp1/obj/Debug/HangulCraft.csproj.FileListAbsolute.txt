@@ -1,7 +1,6 @@
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.Form1.resources
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.csproj.GenerateResource.cache
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.csproj.CoreCompileInputs.cache
-C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\HangulCraft.csprojAssemblyReference.cache
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\HangulPatcher.exe.config
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\HangulPatcher.exe
 C:\Users\WITHUS\source\repos\WindowsFormsApp1\WindowsFormsApp1\bin\Debug\HangulPatcher.pdb
