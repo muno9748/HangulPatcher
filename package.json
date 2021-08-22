@@ -1,0 +1,26 @@
+{
+  "name": "hangul-patcher",
+  "version": "2.0.0",
+  "description": "Hangul Patcher",
+  "main": "./dist/source/Electron.js",
+  "scripts": {
+    "build": "cargo-cp-artifact -nc index.node -- cargo build --release --message-format=json-render-diagnostics",
+    "watch": "parcel serve app.html --target electron --out-dir dist/source --public-url ./",
+    "start": "set HP_DEV=1&& tsc ./src/GUI/Electron.ts --outDir dist/source && concurrently \"cross-env BROWSER=none yarn run watch\" \"serve dist/source -l 3000\" \"wait-on http://localhost:3000 && electron .\"",
+    "install": "npm run build"
+  },
+  "author": "ilyMuno",
+  "license": "MIT",
+  "devDependencies": {
+    "cargo-cp-artifact": "^0.1",
+    "concurrently": "^6.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^13.2.1",
+    "electron-builder": "^22.11.7",
+    "typescript": "^4.3.5",
+    "wait-on": "^6.0.0"
+  },
+  "dependencies": {
+    "electron-is-dev": "^2.0.0"
+  }
+}

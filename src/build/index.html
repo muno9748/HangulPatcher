@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            @font-face {
+                font-family: "Main";
+                src: url("./Font.ttf");
+            }
+
+            * {
+                box-sizing: border-box;
+                font-family: "Main" !important;
+                user-select: none;
+            }
+
+            body {
+                margin: 0;
+                overflow: hidden;
+                background-image: url(https://static.vecteezy.com/system/resources/previews/002/056/750/non_2x/abstract-blue-purple-and-pink-soft-cloud-background-in-pastel-colorful-gradation-vector.jpg);
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            *:not(html, body, head) {
+                position: absolute;
+            }
+
+            svg {
+                z-index: -1;
+            }
+
+            .logo {
+                width: 65px;
+                margin: 16px;
+                position: absolute;
+            }
+
+            body>.title {
+                top: 90px;
+                left: 15px;
+                color: white;
+                font-size: 1.5rem;
+            }
+
+            .desc {
+                top: 130px;
+                left: 15px;
+                color: white;
+                font-size: 12px;
+            }
+
+            .modalContainer {
+                position: fixed;
+                color: white;
+                width: 100vw;
+                height: 100vh;
+                z-index: 100000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #0000007F;
+                transition: opacity 0.2s ease-in-out;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .modalContainer.enabled {
+                pointer-events: unset;
+                opacity: 1;
+            }
+
+            .modal {
+                background: #202020;
+                width: 300px;
+                height: 400px;
+                border-radius: 10px;
+                box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, 0.56);
+                padding: 20px;
+                z-index: 10000;
+
+                position: relative;
+                top: -20px;
+                transition: top 0.3s ease-in-out;
+            }
+
+            .modalContainer.enabled .modal {
+                top: 0px;
+            }
+
+            .modal>.title {
+                width: 300px;
+                height: 50px;
+                position: relative;
+                top: -20px;
+                left: -20px;
+                border-radius: 10px 10px 0px 0px;
+
+                background-color: #202020;
+                background-image: url(https://i.stack.imgur.com/LrMoi.png);
+                background-size: 5px;
+                background-blend-mode: color-dodge;
+                box-shadow: 0px 14px 11px -10px #181818;
+            }
+
+
+            .modal>.title>.shadow {
+                position: absolute;
+                width: 300px;
+                height: 50px;
+                border-radius: 10px 10px 0px 0px;
+                background: linear-gradient(#00000000, #202020);
+                z-index: 0;
+            }
+
+            .modal>.title>img {
+                position: absolute;
+                left: 10px;
+                top: 7.5px;
+                width: 35px;
+                z-index: 10000;
+            }
+
+            .modal>.title>span {
+                position: absolute;
+                left: 55px;
+                top: 11px;
+                width: 35px;
+                z-index: 10000;
+                font-weight: bold;
+                font-size: 1.7rem;
+            }
+
+            .modal>.footer {
+                width: 300px;
+                height: 60px;
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                top: 270px;
+                display: flex;
+            }
+
+            .modal>.footer>* {
+                flex-grow: 1;
+                margin: 10px;
+                font-size: 16px;
+                color: white;
+                outline: none;
+                border: none;
+                border-radius: 4px;
+                background: #FF538C;
+                cursor: pointer;
+                width: 70px;
+                height: 36px;
+                right: 5px;
+            }
+
+            .modal>.content {
+                position: absolute;
+                left: 0px;
+                width: 300px;
+                text-align: center;
+            }
+
+            .modal>.content .desc {
+                text-align: center;
+                font-size: 16px;
+            }
+
+            .modal>.content .title {
+                position: initial;
+                font-size: 1.7rem;
+            }
+
+            .downloadLink {
+                position: initial;
+                color: cornflowerblue;
+                text-decoration: none;
+                font-size: 1.2rem;
+                cursor: pointer;
+            }
+
+            .pi {
+                position: initial;
+            }
+
+            .warn {
+                position: initial;
+                color: red;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="modalContainer">
+            <div class="modal">
+                <div class="title">
+                    <div class="shadow"></div>
+                    <img src="./logo.png">
+                    <span>
+                        Outdated
+                    </span>
+                </div>
+                <div class="content">
+                    <span class="title">구버전을 사용중입니다!</span>
+                    <br><br>
+                    <span class="downloadLink">다운로드 사이트</span><br><br>
+                    <div class="pi">
+                        에서 새 버전을 다운받아주세요.
+                    </div>
+                    <span class="warn">
+                        <br>
+                        공식 사이트가 아닌 다른
+                        <br>
+                        사이트에서 다운받을시
+                        <br>
+                        해킹의 위험이 있으며
+                        <br>
+                        프로그램 개발자는 책임이 없습니다.
+                        <br>
+                        (라이선스 참조)
+                    </span>
+                </div>
+                <div class="footer">
+                    <button class="ModalExit">닫기</button>
+                </div>
+            </div>
+        </div>
+        <img src="./logo.png" class="logo">
+        <span class="title">Hangul Patcher</span>
+        <span class="desc">Checking update...</span>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900"
+            height="500" viewBox="0 0 900 500">
+            <path fill="black" d="M 0 0 L 450 0 L 320 500 L 0 500"></path>
+        </svg>
+
+        <script>
+            window.addEventListener('load', () => {
+                const { ipcRenderer, remote, shell } = require('electron')
+
+                const endPoint = "https://raw.githubusercontent.com/muno9748/HangulPatcher/master/LatestVersion"
+                const currentVersion = +"2.0.0".replace(/\./g, '')
+
+                document.querySelector('.ModalExit').addEventListener('click', () => {
+                    remote.getCurrentWindow().close()
+                })
+
+                fetch(endPoint)
+                    .then(v => v.text())
+                    .then(v => {
+                        const version = +v.replace(/\./g, '')
+
+                        setTimeout(() => {
+                            if (currentVersion < version) {
+                                document.querySelector('.downloadLink').addEventListener('click', () => {
+                                    shell.openExternal('https://github.com/muno9748/HangulPatcher/releases/tag/' + version)
+                                })
+                                document.querySelector('.modalContainer').classList.add('enabled')
+                            } else {
+                                ipcRenderer.send('openMain')
+                            }
+                        }, 1000)
+                    })
+                    .catch(err => {
+                        remote.getCurrentWindow().close()
+                    })
+            })
+        </script>
+    </body>
+
+</html>
