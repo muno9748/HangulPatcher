@@ -267,7 +267,7 @@ document.querySelector<HTMLInputElement>('#keepHangul')!.checked = keepHangul ==
 
 
 
-const currentVersion = '2.0.1'
+const currentVersion = '2.0.2'
 
 document.querySelector<HTMLSpanElement>('.version')!.innerText = currentVersion
 

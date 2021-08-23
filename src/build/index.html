@@ -243,7 +243,7 @@
                 const { ipcRenderer, remote, shell } = require('electron')
 
                 const endPoint = "https://raw.githubusercontent.com/muno9748/HangulPatcher/master/LatestVersion"
-                const currentVersion = +"2.0.1".replace(/\./g, '')
+                const currentVersion = +"2.0.2".replace(/\./g, '')
 
                 document.querySelector('.ModalExit').addEventListener('click', () => {
                     remote.getCurrentWindow().close()
@@ -257,7 +257,7 @@
                         setTimeout(() => {
                             if (currentVersion < version) {
                                 document.querySelector('.downloadLink').addEventListener('click', () => {
-                                    shell.openExternal('https://github.com/muno9748/HangulPatcher/releases/tag/' + version)
+                                    shell.openExternal('https://github.com/muno9748/HangulPatcher/releases/tag/' + v)
                                 })
                                 document.querySelector('.modalContainer').classList.add('enabled')
                             } else {
