@@ -71,10 +71,12 @@ const keyMap = new Map([
 ])
 
 let chatOpenKey: number = null!
+let cmdOpenKey: number = null!
+let keyRet: number = null!
+let recordingChatOpen: boolean = false
+let recordingCmdOpen: boolean = false
 
 function recordKey(e: KeyboardEvent) {
-    e.preventDefault()
-
     const key = e.code
 
     let result = key
@@ -98,21 +100,63 @@ function recordKey(e: KeyboardEvent) {
     document.querySelector<HTMLSpanElement>('.keyText')!.innerText = result[0].toUpperCase() + result.slice(1)
     document.querySelector<HTMLDivElement>('.error')!.classList.remove('active')
 
-    chatOpenKey = keyMap.get(result)!
+    keyRet = keyMap.get(result)!
 }
 
+function recordChatOpen(e: KeyboardEvent) {
+    if (!recordingChatOpen) {
+        return
+    }
+
+    const value = recordKey(e)
+
+    chatOpenKey = keyRet
+
+    e.preventDefault()
+    return value
+}
+
+function recordCmdOpen(e: KeyboardEvent) {
+    if (!recordingCmdOpen) {
+        return
+    }
+
+    const value = recordKey(e)
+
+    cmdOpenKey = keyRet
+
+    e.preventDefault()
+    return value
+}
+
+document.addEventListener('keydown', recordChatOpen)
+document.addEventListener('keydown', recordCmdOpen)
+
 document.querySelector('.Key')!.addEventListener('click', () => {
+    document.querySelector<HTMLSpanElement>('.keyText')!.innerText = '...'
+    document.querySelector<HTMLSpanElement>('.modalMode')!.innerText = '채팅'
     if (document.querySelector<HTMLDivElement>('.start')!.classList.contains('pause')) {
         ipcRenderer.sendSync('Patcher::stopHook')
     }
     document.querySelector('.modalContainer')!.classList.toggle('enabled')
-    document.addEventListener('keydown', recordKey)
+    recordingChatOpen = true
+})
+
+document.querySelector('.CmdKey')!.addEventListener('click', () => {
+    document.querySelector<HTMLSpanElement>('.keyText')!.innerText = '...'
+    document.querySelector<HTMLSpanElement>('.modalMode')!.innerText = '명령어'
+    if (document.querySelector<HTMLDivElement>('.start')!.classList.contains('pause')) {
+        ipcRenderer.sendSync('Patcher::stopHook')
+    }
+    document.querySelector('.modalContainer')!.classList.toggle('enabled')
+    recordingCmdOpen = true
 })
 
 document.querySelector('.ModalExit')!.addEventListener('click', () => {
     chatOpenKey = null!
-    document.removeEventListener('keydown', recordKey)
-    document.querySelector<HTMLSpanElement>('.keyText')!.innerText = '...'
+    cmdOpenKey = null!
+    recordingChatOpen = false
+    recordingCmdOpen = false
     document.querySelector('.modalContainer')!.classList.remove('enabled')
     document.querySelector<HTMLDivElement>('.error')!.classList.remove('active')
     if (document.querySelector<HTMLDivElement>('.start')!.classList.contains('pause')) {
@@ -125,9 +169,22 @@ document.querySelector('.ModalOkay')!.addEventListener('click', () => {
         localStorage.setItem('ChatOpenVKCode', chatOpenKey.toString())
         ipcRenderer.sendSync('Patcher::setChatOpen', chatOpenKey)
         document.querySelector<HTMLButtonElement>('.Key')!.innerText = reverseKeyMap.get(chatOpenKey)!
+    } else if (cmdOpenKey) {
+        localStorage.setItem('CmdOpenVKCode', cmdOpenKey.toString())
+        ipcRenderer.sendSync('Patcher::setCmdOpen', cmdOpenKey)
+        document.querySelector<HTMLButtonElement>('.CmdKey')!.innerText = reverseKeyMap.get(cmdOpenKey)!
     }
 
+    chatOpenKey = null!
+    cmdOpenKey = null!
+    recordingChatOpen = false
+    recordingCmdOpen = false
+
     document.querySelector('.modalContainer')!.classList.remove('enabled')
+
+    if (document.querySelector<HTMLDivElement>('.start')!.classList.contains('pause')) {
+        ipcRenderer.sendSync('Patcher::startHook')
+    }
 })
 
 document.querySelectorAll<HTMLInputElement>('.langmodeRadio').forEach(element => {
@@ -175,6 +232,7 @@ document.querySelector<HTMLSpanElement>('.exit')!.addEventListener('click', () =
 })
 
 if (!localStorage.getItem('ChatOpenVKCode')) localStorage.setItem('ChatOpenVKCode', 0x54.toString())
+if (!localStorage.getItem('CmdOpenVKCode')) localStorage.setItem('CmdOpenVKCode', 0xBF.toString())
 if (!localStorage.getItem('HangulSwitchMode')) localStorage.setItem('HangulSwitchMode', '0')
 if (!localStorage.getItem('InGameHangulBlock')) localStorage.setItem('InGameHangulBlock', '1')
 if (!localStorage.getItem('KeepHangul')) localStorage.setItem('KeepHangul', '0')
@@ -184,6 +242,10 @@ const reverseKeyMap = new Map(Array.from(keyMap.entries()).map(([k, v]) => [v, k
 const chatOpenVKCode = +localStorage.getItem('ChatOpenVKCode')!
 
 document.querySelector<HTMLButtonElement>('.Key')!.innerText = reverseKeyMap.get(chatOpenVKCode)!
+
+const cmdOpenVKCode = +localStorage.getItem('CmdOpenVKCode')!
+
+document.querySelector<HTMLButtonElement>('.CmdKey')!.innerText = reverseKeyMap.get(cmdOpenVKCode)!
 
 const hangulSwitchMode = +localStorage.getItem('HangulSwitchMode')!
 
@@ -205,13 +267,14 @@ document.querySelector<HTMLInputElement>('#keepHangul')!.checked = keepHangul ==
 
 
 
-const currentVersion = '2.0.0'
+const currentVersion = '2.0.1'
 
 document.querySelector<HTMLSpanElement>('.version')!.innerText = currentVersion
 
 
 ipcRenderer.sendSync('Patcher::setLangMode', hangulSwitchMode)
 ipcRenderer.sendSync('Patcher::setChatOpen', chatOpenVKCode)
+ipcRenderer.sendSync('Patcher::setCmdOpen', cmdOpenVKCode)
 ipcRenderer.sendSync('Patcher::setKeepHangul', !!keepHangul)
 ipcRenderer.sendSync('Patcher::setInGameHangulBlock', !!inGameHangulBlock)
 ipcRenderer.sendSync('Patcher::startHook')

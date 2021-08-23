@@ -4,6 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hangul Patcher 2.0</title>
         <style>
             @font-face {
                 font-family: "Main";
@@ -701,6 +702,15 @@
                 height: 360px;
                 width: 318px;
             }
+
+            .settings>.setting:last-child {
+                margin-bottom: 25px;
+            }
+
+            .htoggle {
+                position: relative;
+                top: 4px;
+            }
         </style>
     </head>
 
@@ -719,7 +729,7 @@
                         키보드를 레코딩 중입니다
                         <br>
                         <br>
-                        채팅 오픈키로
+                        <span class="modalMode"></span> 오픈키로
                         <br>
                         사용할키를 눌러주세요
                     </div>
@@ -768,8 +778,16 @@
                                 <button class="Key">T</button>
                             </div>
                         </div>
+                        <div class="cmdkey setting">
+                            <img src="src/GUI/resources/cmd.png" class="icon" />
+                            <span class="title">명령어 오픈 키 설정</span>
+                            <span class="desc">어떤 키를 눌러 명령어창을 오픈할지 설정합니다.</span>
+                            <div class="control">
+                                <button class="CmdKey">T</button>
+                            </div>
+                        </div>
                         <div class="langmode setting">
-                            <img src="src/GUI/resources/keyboard.png" class="icon" />
+                            <img src="src/GUI/resources/hangul.png" class="icon htoggle" />
                             <span class="title">한글 토글 키 설정</span>
                             <span class="desc">어떤 키를 눌러 한/영 전환을 할지 설정합니다.</span>
                             <div class="control">
@@ -784,7 +802,7 @@
                             </div>
                         </div>
                         <div class="preventhangul setting">
-                            <img src="src/GUI/resources/keyboard.png" class="icon" />
+                            <img src="src/GUI/resources/hangulblock.png" class="icon" />
                             <span class="title">게임중 한/영키 무시</span>
                             <span class="desc">게임 중 한/영키가 눌려 방해가 되는것을 방지합니다</span>
                             <div class="control">
@@ -795,7 +813,7 @@
                             </div>
                         </div>
                         <div class="keephangul setting">
-                            <img src="src/GUI/resources/keyboard.png" class="icon" />
+                            <img src="src/GUI/resources/keephangul.png" class="icon" />
                             <span class="title">한/영 유지</span>
                             <span class="desc">채팅창을 닫으면 영어로 전환되는것을 방지합니다</span>
                             <div class="control">

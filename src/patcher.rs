@@ -2,24 +2,20 @@ use crate::api;
 use crate::buf;
 use crate::send_key::*;
 
-use lazy_static::lazy_static;
 use sejong::Buffer;
 use std::mem::MaybeUninit;
 use std::ptr;
-use std::sync::Mutex;
 use winapi::{
     shared::{minwindef::*, windef::*},
     um::winuser::*,
 };
 
-lazy_static! {
-    static ref hangul: Mutex<Buffer> = Mutex::new(Buffer::default());
-}
-
+static mut hangul: usize = 0;
 static mut erase: bool = false;
 static mut skips: u16 = 0;
 static mut lang_mode: u8 = 0u8;
 static mut chat_open: u32 = 0u32;
+static mut cmd_open: u32 = 0u32;
 static mut block_hangul: bool = false;
 static mut keep_hangul: bool = false;
 static mut is_hangul: bool = false;
@@ -27,10 +23,14 @@ static mut is_chat: bool = false;
 static mut hook: Option<*mut HHOOK__> = None;
 
 unsafe fn clear_buffer() {
-    let mut buf = hangul.lock().unwrap();
+    let buf = &mut *(hangul as *mut Buffer);
     buf.out();
 
     erase = false;
+}
+
+pub unsafe fn set_hangul(buffer: &mut Buffer) {
+    hangul = buffer as *mut Buffer as usize;
 }
 
 pub unsafe fn wait() {
@@ -63,6 +63,10 @@ pub unsafe fn set_langmode(mode: u8) {
 
 pub unsafe fn set_chat_open(vk_code: u32) {
     chat_open = vk_code;
+}
+
+pub unsafe fn set_cmd_open(vk_code: u32) {
+    cmd_open = vk_code;
 }
 
 pub unsafe fn set_hangul_block(block: bool) {
@@ -116,6 +120,12 @@ pub unsafe extern "system" fn handler(code: i32, w_param: usize, l_param: isize)
                 return next();
             }
         }
+        if vk_code == cmd_open {
+            if !is_chat {
+                is_chat = true;
+                return next();
+            }
+        }
 
         if vk_code == 21 {
             if is_chat {
@@ -145,14 +155,14 @@ pub unsafe extern "system" fn handler(code: i32, w_param: usize, l_param: isize)
                     return;
                 }
 
-                let mut buf = hangul.lock().unwrap();
+                let buf = &mut *(hangul as *mut Buffer);
 
                 buf.pop();
                 skips += 1;
                 send_back();
                 send_key(buf.to_string().as_str());
 
-                if buf::get_length(&mut *buf as *mut Buffer) == 0 {
+                if buf::get_length(hangul as *mut Buffer) == 0 {
                     erase = false;
                 }
             });
@@ -178,7 +188,7 @@ pub unsafe extern "system" fn handler(code: i32, w_param: usize, l_param: isize)
 
         std::thread::spawn(move || unsafe {
             let key = mapped_key.unwrap();
-            let mut buf = hangul.lock().unwrap();
+            let buf = &mut *(hangul as *mut Buffer);
             buf.put(key);
             let text = buf.to_string();
             let text = text.as_str();
@@ -188,7 +198,7 @@ pub unsafe extern "system" fn handler(code: i32, w_param: usize, l_param: isize)
             }
             send_key(text);
             if text.len() == 6 {
-                buf::remove_first(&mut *buf as *mut Buffer);
+                buf::remove_first(hangul as *mut Buffer);
             }
             erase = true;
         });

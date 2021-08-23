@@ -9,6 +9,7 @@ mod patcher;
 mod send_key;
 
 use neon::prelude::*;
+use sejong::Buffer;
 
 fn start_hook(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     unsafe {
@@ -78,12 +79,29 @@ fn set_keep_hangul(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     Ok(cx.undefined())
 }
 
+fn set_cmd_open(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let value = cx.argument::<JsNumber>(0)?.value(&mut cx);
+
+    unsafe {
+        patcher::set_cmd_open(value as u32);
+    }
+
+    Ok(cx.undefined())
+}
+
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
+    unsafe {
+        let boxed_buf = Box::new(Buffer::with_capacity(6));
+        let static_buf = Box::leak(boxed_buf);
+        patcher::set_hangul(static_buf);
+    }
+
     cx.export_function("startHook", start_hook)?;
     cx.export_function("stopHook", stop_hook)?;
     cx.export_function("setLangmode", set_langmode)?;
     cx.export_function("setChatOpen", set_chat_open)?;
+    cx.export_function("setCmdOpen", set_cmd_open)?;
     cx.export_function("setKeepHangul", set_keep_hangul)?;
     cx.export_function("setInGameHangulBlock", set_hangul_block)?;
     cx.export_function("wait", wait)?;

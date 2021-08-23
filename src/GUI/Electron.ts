@@ -1,5 +1,4 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
-// @ts-ignore
 import * as Patcher from './Patcher.node'
 import * as path from 'path'
 
@@ -78,6 +77,11 @@ function createWindow() {
 
     ipcMain.on('Patcher::setChatOpen', (e, vkCode) => {
         Patcher.setChatOpen(vkCode)
+        e.returnValue = ""
+    })
+
+    ipcMain.on('Patcher::setCmdOpen', (e, vkCode) => {
+        Patcher.setCmdOpen(vkCode)
         e.returnValue = ""
     })
 

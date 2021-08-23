@@ -102,7 +102,9 @@ pub unsafe fn convert(buf: *mut Buffer) -> *mut XBuffer {
 pub unsafe fn remove_first(buf: *mut Buffer) {
     let xbuf = convert(buf);
 
-    (*xbuf).0.remove(0);
+    if (*xbuf).0.len() != 0 {
+        (*xbuf).0.remove(0);
+    }
 }
 
 pub unsafe fn get_length(buf: *mut Buffer) -> usize {
