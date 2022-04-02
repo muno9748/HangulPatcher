@@ -5,7 +5,7 @@
 <p align="center">Non-Mod, Non-Injection Hangul Patcher for games</p>
 
 # 🎉 Contributions
-* Thanks for [NamuTree0345](https://github.com/NamuTree0345)!
+* Thanks for [R2turnTrue](https://github.com/R2turnTrue)!
 
 # License
 ![CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
