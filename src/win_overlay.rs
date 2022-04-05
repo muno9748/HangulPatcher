@@ -204,7 +204,8 @@ impl Overlay {
             let d3d = &mut *raw_d3d;
         
             let mut params = D3DPRESENT_PARAMETERS {
-                PresentationInterval: D3DPRESENT_INTERVAL_IMMEDIATE,
+                PresentationInterval: D3DPRESENT_INTERVAL_ONE,
+                FullScreen_RefreshRateInHz: D3DPRESENT_RATE_DEFAULT,
                 SwapEffect: D3DSWAPEFFECT_DISCARD,
                 BackBufferFormat: D3DFMT_A8R8G8B8,
                 BackBufferHeight: h as _,
@@ -213,7 +214,6 @@ impl Overlay {
                 Windowed: 1,
                 
                 // zeroed
-                FullScreen_RefreshRateInHz: 0,
                 AutoDepthStencilFormat: 0,
                 EnableAutoDepthStencil: 0,
                 MultiSampleQuality: 0,

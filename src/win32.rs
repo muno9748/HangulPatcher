@@ -3,12 +3,12 @@ use winapi::{
         minwindef::HINSTANCE, 
         windef::{HWND, HHOOK, RECT}
     },
-    um::{winuser as user},
+    um::{winuser::{self as user}, processthreadsapi::GetCurrentThreadId},
     ctypes::c_int,
 };
 use std::{
-    sync::atomic::{AtomicUsize, AtomicPtr, Ordering},
-    cell::RefCell, mem, ptr,
+    sync::atomic::{AtomicUsize, AtomicPtr, Ordering, AtomicU32},
+    cell::RefCell, mem, ptr, rc::Rc,
 };
 
 thread_local! {
@@ -16,6 +16,8 @@ thread_local! {
 }
 
 use std::sync::Mutex;
+
+use crate::Event;
 
 lazy_static::lazy_static! {
     static ref HOOK: Mutex<Option<usize>> = Mutex::new(None);
@@ -26,6 +28,39 @@ static MC_HWND: AtomicUsize = AtomicUsize::new(0);
 pub enum HookResult {
     Block,
     Pass
+}
+
+pub static LOOP_ID: AtomicU32 = AtomicU32::new(0);
+
+pub(crate) fn msg_loop(cb: impl Fn(&mut Event) -> ()) {
+    use user::*;
+
+    unsafe {
+        let mut msg: MSG = std::mem::zeroed();
+        
+        LOOP_ID.store(GetCurrentThreadId(), Ordering::SeqCst);
+    
+        while GetMessageA(&mut msg, 0 as _, 0, 0) > 0 {
+            if msg.message == 0x400 {
+                let ptr = &mut *(msg.lParam as *mut Event);
+
+                cb(ptr);
+
+                std::ptr::drop_in_place(ptr);
+            }
+
+            TranslateMessage(&mut msg);
+            DispatchMessageA(&mut msg);
+        }
+    }
+}
+
+pub(crate) fn send_msg(ev: Event) {
+    unsafe {
+        let ev = Box::leak(Box::new(ev));
+
+        user::PostThreadMessageA(LOOP_ID.load(Ordering::SeqCst), 0x400, 0, ev as *mut _ as isize);
+    }
 }
 
 unsafe extern "system" fn hook_fn(code: i32, w: usize, l: isize) -> isize {
@@ -96,15 +131,17 @@ pub fn toggle_fullscreen_custom() {
             if GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mut mi) != 0 {
                 let w = mi.rcMonitor.right - mi.rcMonitor.left;
                 let h = mi.rcMonitor.bottom - mi.rcMonitor.top;
-                
+
+                ClipCursor(&mi.rcMonitor);
                 SetWindowLongW(hwnd, GWL_STYLE, dw_style & !WS_OVERLAPPEDWINDOW as i32);
                 SetWindowLongW(hwnd, GWL_EXSTYLE, GetWindowLongW(hwnd, GWL_EXSTYLE) & !WS_EX_TOPMOST as i32);
+                SetCursorPos(w / 2, h / 2);
                 SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, w, h, SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
                 SetForegroundWindow(hwnd);
             }
         } else {
             let rect = &*rect;
-
+            
             SetWindowLongW(hwnd, GWL_STYLE, dw_style | WS_OVERLAPPEDWINDOW as i32);
             SetWindowLongW(hwnd, GWL_EXSTYLE, GetWindowLongW(hwnd, GWL_EXSTYLE) & !WS_EX_TOPMOST as i32);
             SetWindowPos(hwnd, HWND_TOP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
@@ -147,9 +184,11 @@ pub fn find_and_toggle_fullscreen_custom() {
             if GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mut mi) != 0 {
                 let w = mi.rcMonitor.right - mi.rcMonitor.left;
                 let h = mi.rcMonitor.bottom - mi.rcMonitor.top;
-                
+
+                ClipCursor(&mi.rcMonitor);
                 SetWindowLongW(hwnd, GWL_STYLE, dw_style & !WS_OVERLAPPEDWINDOW as i32);
                 SetWindowLongW(hwnd, GWL_EXSTYLE, GetWindowLongW(hwnd, GWL_EXSTYLE) & !WS_EX_TOPMOST as i32);
+                SetCursorPos(w / 2, h / 2);
                 SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, w, h, SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
                 SetForegroundWindow(hwnd);
             }

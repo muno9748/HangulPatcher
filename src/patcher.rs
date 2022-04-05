@@ -413,7 +413,7 @@ impl Patcher {
         
             let mut patcher = patcher.borrow_mut();
             let patcher = patcher.as_mut().unwrap();
-    
+
             if !os::is_ingame() {
                 return HookResult::Pass
             }
@@ -427,9 +427,11 @@ impl Patcher {
                 if patcher.settings.show_overlay.load(Ordering::Relaxed) {
                     os::toggle_fullscreen_custom();
                     IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::SeqCst), Ordering::SeqCst);
+
+                    return HookResult::Block
                 }
     
-                return HookResult::Block
+                return HookResult::Pass
             }
     
             if patcher.settings.block_kr_toggle_ingame.load(Ordering::Relaxed) && key == keys::KoreanToggle {

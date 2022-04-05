@@ -159,7 +159,7 @@ fetch('https://api.github.com/repos/muno9748/HangulPatcher/releases/latest').the
     if(resp.tag_name != currentVersion) {
         const resp = await __TAURI__.dialog.ask('새로운 버전이 있습니다.\n다운받으시겠습니까?', 'Korean Patcher')
 
-        __TAURI__.shell.open('https://github.com/muno9748/HangulPatcher/releases/latest')
+        if(resp) __TAURI__.shell.open('https://github.com/muno9748/HangulPatcher/releases/latest')
     }
 })
 
