@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hangul Patcher 2.0</title>
+        <style>
+            @font-face {
+                font-family: "Main";
+                src: url("src/GUI/resources/GmarketSansTTFLight.ttf");
+            }
+
+            * {
+                box-sizing: border-box;
+                font-family: "Main" !important;
+                user-select: none;
+            }
+
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .container>* {
+                height: 100vh;
+            }
+
+            .bar {
+                background-color: #141414;
+                width: 50px;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .bar>img {
+                width: 30px;
+                height: 30px;
+                margin: 5px;
+                position: relative;
+                top: 6px;
+                left: 1px;
+            }
+
+            .bar .icons {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                align-items: center;
+                position: relative;
+                left: 1px;
+                height: calc(100vh - 50px - 8px);
+            }
+
+            .bar .icons .icon {
+                width: 20px;
+                height: 20px;
+                margin-top: 15px;
+                cursor: pointer;
+            }
+
+            .container>.content {
+                flex-grow: 10;
+                background-color: #202020;
+                background-image: url(https://i.stack.imgur.com/LrMoi.png);
+                background-size: 5px;
+                background-blend-mode: color-dodge;
+            }
+
+            .container>.content .inner {
+                background: linear-gradient(#00000000, #00000000, #202020, #202020, #202020, #202020, #202020);
+                width: 100%;
+                height: 100vh;
+                position: relative;
+                color: white;
+                z-index: 10000;
+            }
+
+            .isActive.activated .version::before {
+                content: 'Activated | v ';
+            }
+
+            .isActive .version::before {
+                content: 'Paused | v ';
+            }
+
+            .isActive .indicator {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 1000px;
+                position: relative;
+                top: 2px;
+                transition: background-color 0.1s ease-in-out;
+            }
+
+            .isActive.activated .indicator {
+                background-color: #77DD77;
+            }
+
+            .isActive .indicator {
+                background-color: #FF6961;
+            }
+
+            .isActive {
+                color: rgb(163, 163, 172);
+                position: absolute;
+                top: 20px;
+                left: 30px;
+                font-size: 11px;
+            }
+
+            .others {
+                background-color: #242424;
+                flex-grow: 6;
+                z-index: 1000;
+            }
+
+            .inner>.head>.title {
+                position: absolute;
+                top: 50px;
+                left: 30px;
+                font-size: 2.2rem;
+                font-weight: bold;
+            }
+
+            .hangulMode {
+                position: absolute;
+                top: 10px;
+                left: 425px;
+
+                font-size: 14px;
+                color: white;
+                border: none;
+                outline: none;
+                background-color: #161616;
+                border-radius: 4px;
+                padding: 4px;
+                padding-left: 10px;
+                padding-right: 10px;
+                display: block !important;
+                width: fit-content;
+            }
+
+            .hangulMode span {
+                position: relative;
+                top: 1px;
+                margin-left: 4px;
+            }
+
+            .hangulMode .indicator {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 1000px;
+                position: relative;
+                top: 2px;
+                transition: background-color 0.1s ease-in-out;
+            }
+
+            .hangulMode.activated .indicator {
+                background-color: #77DD77;
+            }
+
+            .hangulMode .indicator {
+                background-color: #FF6961;
+            }
+
+            .chatMode {
+                position: absolute;
+                top: 40px;
+                left: 425px;
+
+                font-size: 14px;
+                color: white;
+                border: none;
+                outline: none;
+                background-color: #161616;
+                border-radius: 4px;
+                padding: 4px;
+                padding-left: 10px;
+                padding-right: 10px;
+                display: block !important;
+                width: fit-content;
+            }
+
+            .chatMode span {
+                position: relative;
+                top: 1px;
+                margin-left: 4px;
+            }
+
+            .chatMode .indicator {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 1000px;
+                position: relative;
+                top: 2px;
+                transition: background-color 0.1s ease-in-out;
+            }
+
+            .chatMode.activated .indicator {
+                background-color: #77DD77;
+            }
+
+            .chatMode .indicator {
+                background-color: #FF6961;
+            }
+
+            .invisible {
+                position: absolute;
+                width: 100vw;
+                height: 150px;
+                -webkit-app-region: drag;
+            }
+
+            .container>.others .title {
+                color: white;
+                font-weight: bold;
+                font-size: 2.3rem;
+                margin: 10px;
+                position: absolute;
+                right: -10px;
+                top: -10px;
+                background-image: url(https://static.vecteezy.com/system/resources/previews/002/056/750/non_2x/abstract-blue-purple-and-pink-soft-cloud-background-in-pastel-colorful-gradation-vector.jpg);
+                width: 318px;
+                height: 150px;
+                background-repeat: no-repeat;
+                background-size: 700px;
+                background-position: -70px -100px;
+                text-align: center;
+                padding-top: 55px;
+            }
+
+            .exit {
+                display: inline-block;
+                background-image: url('./src/GUI/resources/exit.svg');
+                background-size: cover;
+                transition: background-image 0.15s ease-in-out;
+            }
+
+            .exit:hover {
+                display: inline-block;
+                background-image: url('./src/GUI/resources/redExit.svg');
+                background-size: cover;
+            }
+
+            .github {
+                display: inline-block;
+                background-image: url('./src/GUI/resources/github.svg');
+                background-size: cover;
+                transition: background-image 0.15s ease-in-out;
+                transform: scale(1.2) translate(-1px, -1px);
+            }
+
+            .github:hover {
+                display: inline-block;
+                background-image: url('./src/GUI/resources/whiteGithub.svg');
+                background-size: cover;
+            }
+
+            .inner>.settings {
+                position: absolute;
+                width: 532px;
+                top: 150px;
+                height: 350px;
+                left: 0;
+                background-color: transparent;
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+            }
+
+            .settings>.setting {
+                margin-top: 20px;
+                border: #1d1d1d 1px solid;
+                border-radius: 7px;
+                background: #1c1c1c;
+                box-shadow: 5px 5px 10px #181818,
+                    -5px -5px 10px #202020;
+                padding: 10px;
+                max-width: 500px;
+                position: relative;
+                left: 15px;
+                height: 60px;
+            }
+
+            .settings>.setting .icon {
+                width: 40px;
+            }
+
+            .settings>.setting .title {
+                position: absolute;
+                font-weight: bold;
+                color: #eee;
+                left: 58px;
+                top: 11px;
+                font-size: 17px;
+            }
+
+            .settings>.setting .desc {
+                position: absolute;
+                color: #aaa;
+                left: 58px;
+                top: 35px;
+                font-size: 14px;
+            }
+
+            .settings>.setting .control {
+                position: absolute;
+                right: 0px;
+                top: 0px;
+                width: 110px;
+                height: 60px;
+                z-index: 10000;
+            }
+
+            .inner>.settings {
+                overflow-y: scroll;
+            }
+
+            ::-webkit-scrollbar {
+                width: 3px;
+            }
+
+            ::-webkit-scrollbar-track {
+                display: none;
+            }
+
+            ::-webkit-scrollbar-button:start:decrement,
+            ::-webkit-scrollbar-button:end:increment {
+                display: none;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background-color: #1a1a1a;
+                border-radius: 30px;
+            }
+
+            .head {
+                background: transparent;
+                position: absolute;
+                width: 532px;
+                height: 150px;
+                box-shadow: 0px 14px 11px -10px #181818;
+                z-index: 10000;
+            }
+
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 54px;
+                height: 27px;
+            }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 20px;
+                width: 20px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            input:checked+.slider {
+                background-color: #FD71BE;
+            }
+
+            input:focus+.slider {
+                box-shadow: 0 0 1px #FD71BE;
+            }
+
+            input:checked+.slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+
+            .slider.round {
+                border-radius: 34px;
+            }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+
+            .switch {
+                position: absolute;
+                left: calc(55px / 2);
+                top: calc(30px / 2);
+            }
+
+            [type="radio"]:checked,
+            [type="radio"]:not(:checked) {
+                position: absolute;
+                left: -9999px;
+            }
+
+            [type="radio"]:checked+label,
+            [type="radio"]:not(:checked)+label {
+                position: relative;
+                padding-left: 28px;
+                cursor: pointer;
+                line-height: 20px;
+                display: inline-block;
+                color: white;
+                font-size: 14.5px;
+            }
+
+            [type="radio"]:checked+label:before,
+            [type="radio"]:not(:checked)+label:before {
+                content: '';
+                position: absolute;
+                left: 0px;
+                top: -26px;
+                width: 18px;
+                height: 18px;
+                border: 1px solid #ccc;
+                border-radius: 100%;
+                background: #fff;
+            }
+
+            [type="radio"]:checked+label:after,
+            [type="radio"]:not(:checked)+label:after {
+                content: '';
+                width: 12px;
+                height: 12px;
+                background: #FD71BE;
+                position: absolute;
+                top: -22px;
+                left: 4px;
+                border-radius: 100%;
+                -webkit-transition: all 0.2s ease;
+                transition: all 0.2s ease;
+            }
+
+            [type="radio"]:not(:checked)+label:after {
+                opacity: 0;
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+
+            [type="radio"]:checked+label:after {
+                opacity: 1;
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+
+            .control>p:nth-child(1) {
+                position: absolute;
+                left: -10px;
+                top: 20px;
+            }
+
+            .control>p:nth-child(2) {
+                position: absolute;
+                left: 35px;
+                top: 20px;
+            }
+
+            .control>p:nth-child(1) label::before {
+                position: absolute;
+                left: 32px;
+            }
+
+            .control>p:nth-child(1) label::after {
+                position: absolute;
+                left: 36px;
+            }
+
+            .control>p:nth-child(2) label::before {
+                position: absolute;
+                left: 34px;
+            }
+
+            .control>p:nth-child(2) label::after {
+                position: absolute;
+                left: 38px;
+            }
+
+            .control>button {
+                border-radius: 11px;
+                background: linear-gradient(225deg, #1b1b1b, #202020);
+                box-shadow: -4px 4px 14px #191919,
+                    4px -4px 14px #232323;
+                border: none;
+                outline: none;
+                width: 100px;
+                height: 40px;
+                color: white;
+                position: absolute;
+                top: 10px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .modalContainer {
+                position: fixed;
+                color: white;
+                width: 100vw;
+                height: 100vh;
+                z-index: 100000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #0000007F;
+                transition: opacity 0.2s ease-in-out;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .modalContainer.enabled {
+                pointer-events: unset;
+                opacity: 1;
+            }
+
+            .modal {
+                background: #202020;
+                width: 300px;
+                height: 400px;
+                border-radius: 10px;
+                box-shadow: 0px 0px 32px 0px rgba(0, 0, 0, 0.56);
+                padding: 20px;
+                z-index: 10000;
+
+                position: relative;
+                top: -20px;
+                transition: top 0.3s ease-in-out;
+            }
+
+            .modalContainer.enabled .modal {
+                top: 0px;
+            }
+
+            .modal>.title {
+                width: 300px;
+                height: 50px;
+                position: relative;
+                top: -20px;
+                left: -20px;
+                border-radius: 10px 10px 0px 0px;
+
+                background-color: #202020;
+                background-image: url(https://i.stack.imgur.com/LrMoi.png);
+                background-size: 5px;
+                background-blend-mode: color-dodge;
+                box-shadow: 0px 14px 11px -10px #181818;
+            }
+
+
+            .modal>.title>.shadow {
+                position: absolute;
+                width: 300px;
+                height: 50px;
+                border-radius: 10px 10px 0px 0px;
+                background: linear-gradient(#00000000, #202020);
+                z-index: 0;
+            }
+
+            .modal>.title>img {
+                position: absolute;
+                left: 10px;
+                top: 7.5px;
+                width: 35px;
+                z-index: 10000;
+            }
+
+            .modal>.title>span {
+                position: absolute;
+                left: 55px;
+                top: 11px;
+                width: 35px;
+                z-index: 10000;
+                font-weight: bold;
+                font-size: 1.7rem;
+            }
+
+            .modal>.footer {
+                width: 300px;
+                height: 60px;
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                top: 270px;
+                display: flex;
+            }
+
+            .modal>.footer>* {
+                margin: 10px;
+                font-size: 16px;
+                color: white;
+                outline: none;
+                border: none;
+                border-radius: 4px;
+                background: #FF538C;
+                cursor: pointer;
+                flex-grow: 1;
+            }
+
+            .modal>.content {
+                position: absolute;
+                left: 0px;
+                width: 300px;
+            }
+
+            .modal>.content .desc {
+                text-align: center;
+                font-size: 16px;
+            }
+
+            .keyContainer {
+                width: 150px;
+                height: 50px;
+                background: #1a1a1a;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                border-radius: 6px;
+                margin-top: 50px;
+                font-size: 22px;
+            }
+
+            .keyText {
+                position: relative;
+                top: 13px;
+            }
+
+            .error {
+                color: #f23b22;
+                position: absolute;
+                width: 300px;
+                text-align: center;
+                top: 190px;
+                font-size: .85rem;
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+            }
+
+            .error.active {
+                opacity: 1;
+            }
+
+            .start {
+                width: 74px;
+                height: 74px;
+                box-sizing: border-box;
+                border-style: solid;
+                border-width: 37px 0px 37px 74px;
+                border-color: transparent transparent transparent #5F5F5F;
+                transition: all 100ms ease-in-out;
+                transform: scale(0.29);
+                position: relative;
+                top: 25px;
+            }
+
+            .start.pause {
+                border-style: double;
+                border-width: 0px 0px 0px 60px;
+            }
+
+            .start:hover {
+                border-color: transparent transparent transparent #77DD77;
+            }
+
+            .start.pause:hover {
+                border-color: transparent transparent transparent #FF6961;
+            }
+
+            .others>.content {
+                position: absolute;
+                top: 140px;
+                height: 360px;
+                width: 318px;
+            }
+
+            .settings>.setting:last-child {
+                margin-bottom: 25px;
+            }
+
+            .htoggle {
+                position: relative;
+                top: 4px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="modalContainer">
+            <div class="modal">
+                <div class="title">
+                    <div class="shadow"></div>
+                    <img src="./src/GUI/resources/logo.png">
+                    <span>
+                        Settings
+                    </span>
+                </div>
+                <div class="content">
+                    <div class="desc">
+                        키보드를 레코딩 중입니다
+                        <br>
+                        <br>
+                        <span class="modalMode"></span> 오픈키로
+                        <br>
+                        사용할키를 눌러주세요
+                    </div>
+                    <div class="keyContainer">
+                        <span class="keyText">
+                            ...
+                        </span>
+                    </div>
+
+                    <div class="error">
+                        지원하지 않는 키입니다!
+                    </div>
+                </div>
+                <div class="footer">
+                    <button class="ModalExit">취소</button>
+                    <button class="ModalOkay">저장</button>
+                </div>
+            </div>
+        </div>
+        <div class="invisible"></div>
+        <div class="container">
+            <div class="bar">
+                <img src="./src/GUI/resources/logo.png">
+                <div class="icons">
+                    <div class="start pause" title="Toggle engine"></div>
+                    <span class="icon github" title="Visit github"></span>
+                    <span class="icon exit" title="Teminate process"></span>
+                </div>
+            </div>
+            <div class="content">
+                <div class="inner">
+                    <div class="head">
+                        <div class="isActive activated">
+                            <div class="indicator"></div>
+                            <span class="version">0.2.0</span>
+                        </div>
+                        <div class="title">Dashboard</div>
+                    </div>
+
+                    <div class="settings">
+                        <div class="chatkey setting">
+                            <img src="src/GUI/resources/keyboard.png" class="icon" />
+                            <span class="title">채팅 오픈 키 설정</span>
+                            <span class="desc">어떤 키를 눌러 채팅 전환을 할지 설정합니다.</span>
+                            <div class="control">
+                                <button class="Key">T</button>
+                            </div>
+                        </div>
+                        <div class="cmdkey setting">
+                            <img src="src/GUI/resources/cmd.png" class="icon" />
+                            <span class="title">명령어 오픈 키 설정</span>
+                            <span class="desc">어떤 키를 눌러 명령어창을 오픈할지 설정합니다.</span>
+                            <div class="control">
+                                <button class="CmdKey">T</button>
+                            </div>
+                        </div>
+                        <div class="langmode setting">
+                            <img src="src/GUI/resources/hangul.png" class="icon htoggle" />
+                            <span class="title">한글 토글 키 설정</span>
+                            <span class="desc">어떤 키를 눌러 한/영 전환을 할지 설정합니다.</span>
+                            <div class="control">
+                                <p>
+                                    <input type="radio" id="lang_ctrl" name="langmode" class="langmodeRadio">
+                                    <label for="lang_ctrl">Ctrl</label>
+                                </p>
+                                <p>
+                                    <input type="radio" id="lang_lang" name="langmode" class="langmodeRadio">
+                                    <label for="lang_lang">한/영</label>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="preventhangul setting">
+                            <img src="src/GUI/resources/hangulblock.png" class="icon" />
+                            <span class="title">게임중 한/영키 무시</span>
+                            <span class="desc">게임 중 한/영키가 눌려 방해가 되는것을 방지합니다</span>
+                            <div class="control">
+                                <label class="switch">
+                                    <input type="checkbox" id="ingameHangulBlock">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="keephangul setting">
+                            <img src="src/GUI/resources/keephangul.png" class="icon" />
+                            <span class="title">한/영 유지</span>
+                            <span class="desc">채팅창을 닫으면 영어로 전환되는것을 방지합니다</span>
+                            <div class="control">
+                                <label class="switch">
+                                    <input type="checkbox" id="keepHangul">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="others">
+                <div class="title">
+                    Patch Note #1
+                </div>
+                <div class="content">
+                    <style>
+                        .others>.content>h1:nth-child(2) {
+                            text-align: center;
+                            color: white;
+                        }
+
+                        .others>.content>h2:nth-child(4) {
+                            color: white;
+                            position: relative;
+                            left: 10px;
+                        }
+
+                        .others>.content>.desc {
+                            margin-left: 10px;
+                            color: white;
+                            font-size: 14px;
+                        }
+
+                        .others>.content>ul {
+                            color: white;
+                            position: relative;
+                            top: -15px;
+                        }
+                    </style>
+
+                    <h1>한글패쳐 2.0</h1>
+                    <div class="desc">
+                        한글패쳐 2.0 버전이 출시되었습니다!
+                        <br>
+                        <br>
+                        2.0에서는 대부분의 버그이 수정되었고
+                        <br>
+                        기능 또한 개선되며 속도도 빨라졌습니다.
+                        <br>
+                        아마도 제일 개선된건 UI 겠네요.
+                        <br>
+                        <br>
+                        프로그램 사용해주시는 분들 모두
+                        <br>
+                        <b>정말 감사합니다!</b>
+                    </div>
+
+                    <h2># 패치내역</h2>
+                    <ul>
+                        <li>UI 대폭 개선</li>
+                        <li>반응 속도 200% 향상</li>
+                        <li>버그의 99% 수정</li>
+                        <li>여러 설정 기능들 추가</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <script src="src/GUI/Main.ts"></script>
+    </body>
+
+</html>
