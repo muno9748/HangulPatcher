@@ -185,6 +185,10 @@ pub fn send_key(backspace: bool, utf16: u16) {
 
 pub fn get_mc_hwnd() -> Option<HWND> {
     unsafe extern "system" fn enumerator(hwnd: HWND, lp: isize) -> i32 {
+        if user::IsWindowVisible(hwnd) == 0 {
+            return 1
+        }
+
         let length = user::GetWindowTextLengthW(hwnd);
 
         if length == 0 {

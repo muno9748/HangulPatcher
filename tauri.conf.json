@@ -44,7 +44,8 @@
                 "request": true
             },
             "window": {
-                "close": true
+                "close": true,
+                "startDragging": true
             }, 
             "dialog": {
                 "ask": true

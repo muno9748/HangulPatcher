@@ -282,6 +282,8 @@ impl Overlay {
     pub fn stop(&mut self) {
         unsafe {
             if self.hwnd.is_some() {
+                OVERLAY.store(ptr::null_mut(), Ordering::SeqCst);
+
                 DestroyWindow(self.hwnd.take().unwrap());
                 self.d3d.take().unwrap().Release();
                 self.device.lock().unwrap().take().unwrap().Release();

@@ -84,9 +84,9 @@ impl Patcher {
 
             let overlay = &mut *(OVERLAY as *mut Overlay);
 
-            overlay.stop();
-
             OVERLAY = 0;
+
+            overlay.stop();
 
             if IS_MC_FULLSCREEN.load(Ordering::SeqCst) {
                 os::find_and_toggle_fullscreen_custom();
