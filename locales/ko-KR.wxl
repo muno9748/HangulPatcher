@@ -1,0 +1,38 @@
+<WixLocalization Codepage="utf-8" Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <!-- 일부만 번역되어 있음. -->
+
+    <String Id="LaunchApp">한글패쳐 3.0 실행</String>
+    <String Id="InstallAppFeature">한글패쳐 설치하기</String>
+
+    <String Id="WixUIBack">뒤로</String>
+    <String Id="WixUINext">다음</String>
+    <String Id="WixUICancel">취소</String>
+    <String Id="WixUIFinish">완료</String>
+
+    <String Id="InstallDirDlgTitle">{\WixUI_Font_Bigger}설치 폴더 설정</String>
+    <String Id="InstallDirDlgDescription">다음을 눌러 기본 폴더에 설치하거나 변경을 눌러 바꾸십시오.</String>
+    <String Id="InstallDirDlgFolderLabel">해당 폴더에 한글패쳐를 설치합니다:</String>
+    <String Id="InstallDirDlgChange">변경</String>
+
+    <String Id="UserExitDescription1">한글패쳐 설치가 중단되었습니다. 프로그램이 설치되지 않았습니다. 완료를 눌러 종료하십시오.</String>
+    <String Id="UserExitDescription2"></String>
+
+    <String Id="WelcomeDlgTitle">{\WixUI_Font_Bigger}한글패쳐 설치를 환영합니다.&#13;&#10; </String>
+    <String Id="PrepareDlgTitle">{\WixUI_Font_Bigger}한글패쳐 설치를 환영합니다.&#13;&#10;</String>
+    <String Id="MaintenanceWelcomeDlgTitle">{\WixUI_Font_Bigger}한글패쳐 설치를 환영합니다.&#13;&#10;</String>
+
+    <String Id="WelcomeDlgDescription">해당 설치기는 한글패쳐 3.0을 설치하고 필요한 파일을 컴퓨터에 다운로드 합니다.&#13;&#10;다음을 눌러 진행하거나, 취소를 눌러 설치를 취소하십시오.</String>
+
+    <String Id="UserExitTitle">{\WixUI_Font_Bigger}한글패쳐 설치가 취소되었습니다.</String>
+
+    <String Id="ProgressDlgTitleInstalling">{\WixUI_Font_Title}한글패쳐 설치중...</String>
+
+    <String Id="ExitDialogTitle">{\WixUI_Font_Bigger}한글패쳐가 설치되었습니다.</String>
+
+    <String Id="VerifyReadyDlgInstallTitle">{\WixUI_Font_Title}한글패쳐 3.0을 설치하시겠습니까?</String>
+
+    <String Id="VerifyReadyDlgInstallText">Install을 눌러 진행.</String>
+
+    <String Id="FatalErrorTitle">{\WixUI_Font_Bigger}한글패쳐 설치 중 오류가 발생했습니다.</String>
+    <String Id="FatalErrorDescription1">한글패쳐 설치 중 오류가 발생해 프로그램이 정상적으로 설치되지 않았습니다. 이후 다시 시도해주세요.</String>
+</WixLocalization>

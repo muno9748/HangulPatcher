@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="assets/Main.css">
+    </head>
+    <body>
+        <div id="root">
+            <svg class="AnimatedLogo" xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0, 0, 400, 400">
+                <path d="M114.965 2.917 C 115.744 7.881,115.547 25.623,114.641 32.152 C 111.627 53.863,106.997 70.406,92.419 111.552 C 78.959 149.543,76.537 158.475,76.553 170.073 C 76.563 177.046,76.041 176.697,84.045 175.078 C 107.324 170.367,126.900 171.495,144.571 178.565 C 147.501 179.737,151.293 181.411,152.997 182.284 L 156.096 183.872 157.472 181.667 C 165.615 168.624,170.755 155.584,176.390 133.673 C 179.374 122.073,181.759 113.144,182.271 111.659 C 182.506 110.975,185.769 113.144,194.632 119.876 C 239.924 154.279,268.452 194.089,282.320 242.240 C 294.222 283.565,293.513 331.694,280.368 374.679 L 278.762 379.930 281.921 379.930 C 283.659 379.930,297.232 379.402,312.085 378.756 C 340.361 377.527,371.394 376.690,389.382 376.673 C 400.928 376.662,401.184 376.589,397.809 374.267 C 368.125 353.843,348.513 310.067,344.934 256.243 C 335.371 112.419,269.899 26.445,153.188 4.452 C 142.318 2.404,122.631 0.006,116.647 0.002 L 114.507 -0.000 114.965 2.917 M184.198 119.845 C 184.076 120.042,181.842 127.971,179.234 137.465 C 172.768 160.999,168.842 172.537,164.084 181.985 C 161.773 186.573,160.954 185.479,171.295 191.619 C 206.666 212.621,234.208 237.672,248.975 262.275 C 257.838 277.039,262.340 288.813,269.249 315.286 C 274.094 333.853,278.183 346.791,279.205 346.791 C 279.411 346.791,279.580 345.423,279.580 343.751 C 279.580 342.079,280.218 335.515,280.997 329.165 C 284.751 298.579,284.813 277.218,281.209 256.751 C 272.456 207.038,242.411 162.704,191.392 124.219 C 185.112 119.482,184.611 119.177,184.198 119.845 M95.639 176.670 C 90.183 177.415,82.228 179.276,77.380 180.943 L 73.780 182.180 72.335 186.174 C 49.868 248.263,94.389 316.131,158.926 318.175 C 167.657 318.451,168.258 318.155,162.427 316.449 C 138.062 309.322,119.704 279.453,124.373 254.533 C 125.875 246.518,127.163 243.351,144.611 204.769 L 153.008 186.201 149.864 184.617 C 135.938 177.604,113.205 174.272,95.639 176.670 M62.777 183.618 C -4.008 212.547,-21.372 298.666,29.137 350.458 C 80.495 403.121,169.637 389.641,202.361 324.263 C 205.063 318.865,205.802 316.919,205.150 316.919 C 205.031 316.919,201.813 317.961,198.000 319.235 C 116.937 346.307,39.369 269.025,66.547 188.266 C 67.683 184.893,68.611 182.005,68.611 181.848 C 68.611 181.259,67.311 181.654,62.777 183.618" />
+            </svg>
+            <div class="Title">Korean Patcher</div>
+            <div class="Separator"></div>
+            <div class="Invisible" data-tauri-drag-region></div>
+            <div id="container">
+                <div>
+                    <img src="assets/ChatOpenKey.png">
+                    <span class="SetChatOpenKeyModalContainer">
+                        <span class="SetChatOpenKeyModal0">
+                            <span class="title">채팅 오픈 키 설정</span>
+                            <span class="desc">어떤 키를 눌러 채팅 창을 여는지 설정합니다.</span>
+                        </span>
+                        <span class="SetChatOpenKeyModal1">
+                            <span class="title">키를 녹화중입니다...</span>
+                            <span class="desc">키를 눌러 키를 설정해주세요.</span>
+                        </span>
+                    </span>
+                    <button type="button" class="SetChatOpenKey"><span><span class="SetChatOpenKeyText"></span></span></button>
+                </div>
+                <div>
+                    <img src="assets/ModeChange.png">
+                    <span class="title">한/영 전환 키 설정</span>
+                    <span class="desc">어떤 키를 눌러 한/영 전환을 할지 설정합니다.</span>
+                    <span class="ChangeModeNativeContainer">
+                        <input type="radio" id="NativeMode" name="ModeChange" class="ModeChangeRadio">
+                        <label for="NativeMode"><span>한/영</span></label>
+                    </span>
+                    <span class="ChangeModeCtrlContainer">
+                        <input type="radio" id="CtrlMode" name="ModeChange" class="ModeChangeRadio">
+                        <label for="CtrlMode"><span>Ctrl</span></label>
+                    </span>
+                </div>
+                <div>
+                    <img src="assets/BlockKorean.png">
+                    <span class="title">게임중 한/영키 무시</span>
+                    <span class="desc">게임 중 한/영키가 눌려 방해가 되는 것을 방지합니다.</span>
+                    <div class="control">
+                        <label class="switch">
+                            <input type="checkbox" id="BlockKorean">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <img src="assets/KeepKorean.png">
+                    <span class="title">한/영 유지</span>
+                    <span class="desc">채팅창을 닫아도 마지막 한/영 상태를 유지합니다.</span>
+                    <div class="control">
+                        <label class="switch">
+                            <input type="checkbox" id="KeepKorean">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <img src="assets/Overlay.png">
+                    <span class="title beta">인게임 오버레이</span>
+                    <span class="desc">게임 내 현재 한/영 상태를 오버레이로 표시합니다.</span>
+                    <div class="control">
+                        <label class="switch">
+                            <input type="checkbox" id="InGameOverlay">
+                            <span class="slider round beta"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="MenuSeparator"></div>
+            <div id="menu">
+                <div class="start pause" title="시작/일시정지"></div>
+                <div class="icon exit" title="나가기"></div>
+                <div class="icon github" title="깃허브 방문"></div>
+            </div>
+        </div>
+
+        <script src="assets/Main.js"></script>
+    </body>
+</html>

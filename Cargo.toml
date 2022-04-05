@@ -1,0 +1,20 @@
+[package]
+name = "hangul-patch"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+winapi = { version = "0.3.9", features = ["winuser", "winbase", "uxtheme", "dwmapi", "d3d9", "errhandlingapi"] }
+phf = { version = "0.10.1", features = ["macros"] }
+lazy_static = "1.4.0"
+png = "0.17.5"
+tauri = { version = "1.0.0-rc.4", features = ["dialog-ask", "http-request", "shell-all", "window-close"] }
+
+[features]
+default = [ "custom-protocol" ]
+custom-protocol = [ "tauri/custom-protocol" ]
+
+[build-dependencies]
+tauri-build = { version = "1.0.0-rc.4", features = [] }

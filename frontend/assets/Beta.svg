@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="106">
+    <defs>
+        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%" gradientTransform="rotate(5)">
+            <stop offset="30%" stop-color="#ff538c"/>
+            <stop offset="100%" stop-color="#df6d12"/>
+        </linearGradient>
+    </defs>
+    <g style="transform: translate(3px, 3px);">
+        <path d="M 50 0 h 230 a 1 1 0 0 1 0 100 h -230 a 1 1 0 0 1 0 -100" style="stroke-width: 6px; stroke: url(#gradient); fill: transparent;"/>
+        <text style="transform: translate(48px, 86px); font-size: 100px; font-style: italic; font-weight: 100; fill: url(#gradient);">BETA</text>
+    </g>
+</svg>

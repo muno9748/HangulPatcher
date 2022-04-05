@@ -1,0 +1,67 @@
+{
+    "build": {
+        "distDir": ["frontend"],
+        "devPath": ["frontend"],
+        "withGlobalTauri": true
+    },
+    "tauri": {
+        "bundle": {
+            "active": true,
+            "targets": "all",
+            "identifier": "com.imuno.dev",
+            "icon": [
+                "icons/16x16.png",
+                "icons/24x24.png",
+                "icons/32x32.png",
+                "icons/48x48.png",
+                "icons/64x64.png",
+                "icons/128x128.png",
+                "icons/256x256.png",
+                "icons/icon.ico"
+            ],
+            "resources": [],
+            "externalBin": [],
+            "copyright": "CC BY-NC-SA License by iMuno 2022",
+            "shortDescription": "MC Korean patcher",
+            "longDescription": "Korean patcher for old minecraft versions.",
+            "windows": {
+                "wix": {
+                    "language": {
+                        "ko-KO": {
+                            "localePath": "locales/ko-KR.wxl"
+                        }
+                    }
+                }
+            }
+        },
+        "allowlist": {
+            "all": false,
+            "shell": {
+                "all": true
+            },
+            "http": {
+                "scope": ["https://github.com/muno9748/HangulPatcher/releases/latest"],
+                "request": true
+            },
+            "window": {
+                "close": true
+            }, 
+            "dialog": {
+                "ask": true
+            }
+        },
+        "windows": [{
+            "title": "Korean Patcher",
+            "width": 400,
+            "height": 600,
+            "resizable": false,
+            "fullscreen": false,
+            "decorations": false,
+            "transparent": true,
+            "center": true
+        }],
+        "security": {
+            "csp": ""
+        }
+    }
+}
