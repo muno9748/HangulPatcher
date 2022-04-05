@@ -8,7 +8,7 @@ use winapi::{
 };
 use std::{
     sync::atomic::{AtomicUsize, AtomicPtr, Ordering, AtomicU32},
-    cell::RefCell, mem, ptr, rc::Rc,
+    cell::RefCell, mem, ptr,
 };
 
 thread_local! {
