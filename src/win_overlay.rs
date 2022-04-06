@@ -51,7 +51,7 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w: usize, l: isize) -> 
             if win32::is_ingame() {
                 let hwnd = GetForegroundWindow();
 
-                if GetWindowLongW(hwnd, GWL_STYLE) & WS_OVERLAPPEDWINDOW as i32 == 0 && GetWindowLongW(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST as i32 != 0 {
+                if GetWindowLongW(hwnd, GWL_STYLE) & WS_OVERLAPPEDWINDOW as i32 == 0 && !patcher::IS_MC_FULLSCREEN.load(Ordering::SeqCst) {
                     let scan = MapVirtualKeyW(0x7a, 0);
 
                     win32::keybd_event_vk_scan(&[
@@ -59,7 +59,7 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w: usize, l: isize) -> 
                         (KEYEVENTF_KEYUP, 0x7a, scan as u16 & 0x00FF),
                     ]);
 
-                    patcher::IS_MC_FULLSCREEN.store(false, Ordering::Relaxed);
+                    patcher::IS_MC_FULLSCREEN.store(false, Ordering::SeqCst);
                 }
 
                 if patcher::chat_opened!() {

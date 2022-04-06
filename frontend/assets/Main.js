@@ -1,3 +1,5 @@
+const currentVersion = '3.0.1'
+
 const noKeySupport = (() => {
     // <span class="InvalidKeyDialog">해당 키는 지원되지 않습니다!</span>
 
@@ -152,8 +154,6 @@ function getStorage() {
 
     return storage
 }
-
-const currentVersion = '3.0.0'
 
 fetch('https://api.github.com/repos/muno9748/HangulPatcher/releases/latest').then(resp => resp.json()).then(async resp => {
     if(resp.tag_name != currentVersion) {
