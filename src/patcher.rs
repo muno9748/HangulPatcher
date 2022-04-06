@@ -419,6 +419,8 @@ impl Patcher {
             }
     
             if key == keys::F11 {
+                IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::SeqCst), Ordering::SeqCst);
+                
                 patcher.mode = CharType::Chosung;
                 patcher.buffer = [0; 4];
     
@@ -426,7 +428,6 @@ impl Patcher {
     
                 if patcher.settings.show_overlay.load(Ordering::Relaxed) {
                     os::toggle_fullscreen_custom();
-                    IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::SeqCst), Ordering::SeqCst);
 
                     return HookResult::Block
                 }
