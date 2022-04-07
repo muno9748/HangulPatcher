@@ -97,6 +97,18 @@ pub fn del_hook() {
     }
 }
 
+pub fn is_fullscreen() -> bool {
+    use winapi::um::shellapi::*;
+    
+    unsafe {
+        let mut state = 0u32;
+        
+        SHQueryUserNotificationState(&mut state);
+
+        return state != QUNS_BUSY
+    }
+}
+
 static LAST_RECT: AtomicPtr<RECT> = AtomicPtr::new(0 as _);
 
 pub fn toggle_fullscreen_custom() {

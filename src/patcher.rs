@@ -199,24 +199,36 @@ impl Patcher {
                     self.mode = CharType::Chosung;
                     self.handler(key, false);
                 } else {
-                    let mut bs = true;
-
                     if self.history_type == HistoryType::Cc {
                         self.buffer[0] = self.history[self.history.len() - 1];
 
-                        bs = false;
                         os::send_key(true, korean::utf16_jongsung(self.history[self.history.len() - 2]));
+
+                        self.mode = CharType::Jongsung;
+                        self.prev = Some(data);
+                        self.buffer[1] = data.5;
+    
+                        os::send_key(false, korean::assemble(self.history[self.history.len() - 1], data.5, 0));
+    
+                        self.history_type = HistoryType::Ab;
+
+                        let t = self.history[self.history.len() - 1];
+
+                        self.history.clear();
+                        self.history.push(t);
+                        self.history.push(data.5);
+                    } else {
+                        self.mode = CharType::Jongsung;
+                        self.prev = Some(data);
+                        self.buffer[1] = data.5;
+    
+                        os::send_key(true, korean::assemble(self.buffer[0], data.5, 0));
+    
+                        self.history_type = HistoryType::Ab;
+    
+                        self.history.push(data.5);
                     }
 
-                    self.mode = CharType::Jongsung;
-                    self.prev = Some(data);
-                    self.buffer[1] = data.5;
-
-                    os::send_key(bs, korean::assemble(self.buffer[0], data.5, 0));
-
-                    self.history_type = HistoryType::Ab;
-
-                    self.history.push(data.5);
                 }
             }
             (CharType::Jungsung, true) => {
@@ -234,15 +246,35 @@ impl Patcher {
 
                     self.handler(key, true);
                 } else {
-                    self.mode = CharType::Jongsung;
-                    self.prev = None;
-                    self.buffer[1] = data.2;
+                    if self.history_type == HistoryType::Cc {
+                        self.buffer[0] = self.history[self.history.len() - 1];
 
-                    os::send_key(true, korean::assemble(self.buffer[0], data.2, 0));
+                        os::send_key(true, korean::utf16_jongsung(self.history[self.history.len() - 2]));
 
-                    self.history_type = HistoryType::Ab;
+                        self.mode = CharType::Jongsung;
+                        self.prev = None;
+                        self.buffer[1] = data.2;
+    
+                        os::send_key(false, korean::assemble(self.history[self.history.len() - 1], data.2, 0));
+    
+                        self.history_type = HistoryType::Ab;
 
-                    self.history.push(data.2);
+                        let t = self.history[self.history.len() - 1];
+
+                        self.history.clear();
+                        self.history.push(t);
+                        self.history.push(data.2);
+                    } else {
+                        self.mode = CharType::Jongsung;
+                        self.prev = None;
+                        self.buffer[1] = data.2;
+    
+                        os::send_key(true, korean::assemble(self.buffer[0], data.2, 0));
+    
+                        self.history_type = HistoryType::Ab;
+    
+                        self.history.push(data.2);
+                    }
                 }
             }
             (CharType::Jongsung, false) => {

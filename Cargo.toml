@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-winapi = { version = "0.3.9", features = ["winuser", "winbase", "uxtheme", "dwmapi", "d3d9", "errhandlingapi"] }
+winapi = { version = "0.3.9", features = ["winuser", "winbase", "uxtheme", "dwmapi", "d3d9", "errhandlingapi", "shellapi"] }
 phf = { version = "0.10.1", features = ["macros"] }
 lazy_static = "1.4.0"
 png = "0.17.5"

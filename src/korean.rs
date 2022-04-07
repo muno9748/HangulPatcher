@@ -49,8 +49,8 @@ pub static KOR_MAP_SHIFT: Map<u8, (CharType, bool, u8)> = phf_map! {
     76u8 => (CharType::Jungsung, false, 20), // l => ㅣ
     77u8 => (CharType::Jungsung, false, 18), // m => ㅡ
     78u8 => (CharType::Jungsung, false, 13), // n => ㅜ
-    79u8 => (CharType::Jungsung, true,  1),  // o => ㅒ
-    80u8 => (CharType::Jungsung, true,  5),  // p => ㅖ
+    79u8 => (CharType::Jungsung, true,  3),  // o => ㅒ
+    80u8 => (CharType::Jungsung, true,  7),  // p => ㅖ
     81u8 => (CharType::Chosung,  true,  18), // q => ㅃ
     82u8 => (CharType::Chosung,  true,  1),  // r => ㄲ
     83u8 => (CharType::Chosung,  false, 3),  // s => ㄴ
