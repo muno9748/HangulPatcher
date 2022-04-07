@@ -1,9 +1,7 @@
+use crate::buffer::Buffer;
 use crate::win32::{self as os, HookResult};
 use crate::win_overlay::Overlay;
 
-use crate::korean::{self, MappedChar};
-use crate::history_type::HistoryType;
-use crate::char_type::CharType;
 use crate::settings::Settings;
 use crate::keys;
 
@@ -20,19 +18,19 @@ thread_local! {
 
 macro_rules! chat_opened {
     () => {
-        crate::patcher::CHAT_OPENED.load(std::sync::atomic::Ordering::Relaxed)
+        crate::patcher::CHAT_OPENED.load(std::sync::atomic::Ordering::SeqCst)
     };
     ($v: expr) => {
-        crate::patcher::CHAT_OPENED.store($v, std::sync::atomic::Ordering::Relaxed)
+        crate::patcher::CHAT_OPENED.store($v, std::sync::atomic::Ordering::SeqCst)
     };
 }
 
 macro_rules! korean_mode {
     () => {
-        crate::patcher::KOREAN_MODE.load(std::sync::atomic::Ordering::Relaxed)
+        crate::patcher::KOREAN_MODE.load(std::sync::atomic::Ordering::SeqCst)
     };
     ($v: expr) => {
-        crate::patcher::KOREAN_MODE.store($v, std::sync::atomic::Ordering::Relaxed)
+        crate::patcher::KOREAN_MODE.store($v, std::sync::atomic::Ordering::SeqCst)
     };
 }
 
@@ -46,22 +44,14 @@ pub static IS_MC_FULLSCREEN: AtomicBool = AtomicBool::new(false);
 static mut OVERLAY: usize = 0;
 
 pub struct Patcher {
-    prev: Option<&'static MappedChar>,
-    pub history_type: HistoryType,
     pub settings: &'static Settings,
-    history: Vec<u8>,
-    buffer: [u8; 4],
-    pub mode: CharType,
+    pub buf: Buffer
 }
 
 impl Patcher {
     pub fn new(settings: &'static Settings) -> Self {
         Patcher {
-            history_type: HistoryType::Null,
-            history: Vec::with_capacity(5),
-            mode: CharType::Chosung,
-            buffer: [0; 4],
-            prev: None,
+            buf: Buffer::new(),
             settings,
         }
     }
@@ -108,330 +98,129 @@ impl Patcher {
         os::del_hook();
     }
 
-    #[inline(always)]
-    fn handler(&mut self, key: u8, shift: bool)  {
-        match (&self.mode, shift) {
-            (CharType::Chosung, false) => {
-                let data = korean::KOR_MAP.get(&key).unwrap();
+    fn send(&mut self, backspace: bool)  {
+        os::send_key(backspace, self.buf.assemble().0);
+    }
 
-                if data.0 == CharType::Chosung {
-                    self.prev = Some(data);
-                    self.mode = CharType::Jungsung;
-                    self.buffer[0] = data.5;
+    fn send_all(&mut self)  {
+        let assemble = self.buf.assemble();
 
-                    os::send_key(false, korean::utf16_jongsung(data.5));
-                    
-                    self.history_type = HistoryType::A;
-
-                    self.history.clear();
-                    self.history.push(data.5);
-                } else {
-                    if let Some(prev) = self.prev.take() {
-                        if prev.3 & data.4 != 0 {
-                            self.history_type = HistoryType::Bb;
+        os::send_key(true, assemble.0);
+        os::send_key(false, unsafe { self.buf.assemble().1.unwrap_unchecked() });
+    }
     
-                            self.history.push(data.5);
+    fn handler(&mut self, key: u8) -> HookResult {
+        if !os::is_ingame() {
+            return HookResult::Pass
+        }
 
-                            os::send_key(true, korean::utf16_jungsung(korean::assemble_jungsung(prev.5, data.5)));
+        if key == keys::F11 {
+            IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::SeqCst), Ordering::SeqCst);
+            
+            self.buf.clear();
 
-                            return
-                        }
+            if self.settings.show_overlay.load(Ordering::SeqCst) {
+                os::toggle_fullscreen_custom();
 
-                        self.handler(key, false);
+                return HookResult::Block
+            }
+
+            return HookResult::Pass
+        }
+
+        if self.settings.block_kr_toggle_ingame.load(Ordering::SeqCst) && key == keys::KoreanToggle {
+            if self.settings.korean_toggle_key.load(Ordering::SeqCst) == keys::KoreanToggle {
+                if !chat_opened!() {
+                    return HookResult::Block
+                }
+            } else {
+                return HookResult::Block
+            }
+        }
+
+        if !chat_opened!() && (key == self.settings.chat_open_key.load(Ordering::SeqCst) || key == self.settings.cmd_open_key.load(Ordering::SeqCst)) {
+            chat_opened!(true);
+
+            HookResult::Pass
+        } else if chat_opened!() {
+            if key == self.settings.korean_toggle_key.load(Ordering::SeqCst) {
+                korean_mode!(!korean_mode!());
+    
+                if korean_mode!() == false {
+                    self.buf.clear();
+                }
+    
+                if self.settings.korean_toggle_key.load(Ordering::SeqCst) != keys::KoreanToggle {
+                    return HookResult::Pass
+                } else {
+                    return HookResult::Block
+                }
+            }
+            
+            if os::ctrl_pressed() {
+                match key {
+                    keys::V | keys::A => self.buf.clear(),
+                    _ => ()
+                }
+                
+                return HookResult::Pass
+            }
+    
+            if key == keys::Enter || key == keys::ESC {
+                chat_opened!(false);
+
+                self.buf.clear();
+                
+                if self.settings.auto_disable_korean.load(Ordering::SeqCst) {
+                    korean_mode!(false);
+                }
+                
+                return HookResult::Pass
+            } else if keys::is_arrow(key) {
+                self.buf.clear();
+                
+                return HookResult::Pass
+            }
+    
+            if korean_mode!() {
+                if keys::is_kor_mappable(key) {
+                    let strlen = self.buf.strlen();
+
+                    self.buf.push(key, os::is_shift());
+                    
+                    if self.buf.strlen() == 2 {
+                        self.send_all();
+                        self.buf.dequeue_syllable();
                     } else {
-                        self.history_type = HistoryType::B;
-                        self.prev = Some(data);
-
-                        self.history.clear();
-                        self.history.push(data.5);
-
-                        os::send_key(false, korean::utf16_jungsung(data.5));
+                        self.send(strlen != 0);
                     }
-                }
-            }
-            (CharType::Chosung, true) => {
-                let data = korean::KOR_MAP_SHIFT.get(&key).unwrap();
-
-                if !data.1 {
-                    self.handler(key, false);
-
-                    return
-                }
-
-                if data.0 == CharType::Chosung {
-                    self.mode = CharType::Jungsung;
-                    self.buffer[0] = data.2;
-
-                    os::send_key(false, korean::utf16_jongsung(data.2));
-                    
-                    self.history_type = HistoryType::A;
-                    
-                    self.history.clear();
-                    self.history.push(data.2);
-                } else {
-                    os::send_key(false, korean::utf16_jungsung(data.2));
-                    
-                    self.history_type = HistoryType::B;
-
-                    self.history.clear();
-                    self.history.push(data.2);
-                }
-            }
-            (CharType::Jungsung, false) => {
-                let data = korean::KOR_MAP.get(&key).unwrap();
-
-                if data.0 == CharType::Chosung {
-                    if let Some(prev) = self.prev.take() {
-                        if prev.1 & data.2 != 0 {
-                            let jongsung = korean::assemble_jongsung(prev.5, data.5);
-                            self.buffer[0] = jongsung;
-
-                            os::send_key(true, korean::utf16_jongsung(jongsung));
-
-                            self.history_type = HistoryType::Cc;
-
-                            self.history.push(data.5);
-
-                            return
-                        }
-                    }
-
-                    self.mode = CharType::Chosung;
-                    self.handler(key, false);
-                } else {
-                    if self.history_type == HistoryType::Cc {
-                        self.buffer[0] = self.history[self.history.len() - 1];
-
-                        os::send_key(true, korean::utf16_jongsung(self.history[self.history.len() - 2]));
-
-                        self.mode = CharType::Jongsung;
-                        self.prev = Some(data);
-                        self.buffer[1] = data.5;
-    
-                        os::send_key(false, korean::assemble(self.history[self.history.len() - 1], data.5, 0));
-    
-                        self.history_type = HistoryType::Ab;
-
-                        let t = self.history[self.history.len() - 1];
-
-                        self.history.clear();
-                        self.history.push(t);
-                        self.history.push(data.5);
+        
+                    HookResult::Block
+                } else if key == keys::Backspace {
+                    if self.buf.strlen() == 0 {
+                        HookResult::Pass
                     } else {
-                        self.mode = CharType::Jongsung;
-                        self.prev = Some(data);
-                        self.buffer[1] = data.5;
-    
-                        os::send_key(true, korean::assemble(self.buffer[0], data.5, 0));
-    
-                        self.history_type = HistoryType::Ab;
-    
-                        self.history.push(data.5);
-                    }
+                        self.buf.pop();
 
-                }
-            }
-            (CharType::Jungsung, true) => {
-                let data = korean::KOR_MAP_SHIFT.get(&key).unwrap();
-
-                if !data.1 {
-                    self.handler(key, false);
-
-                    return
-                }
-
-                if data.0 == CharType::Chosung {
-                    self.mode = CharType::Chosung;
-                    self.prev = None;
-
-                    self.handler(key, true);
-                } else {
-                    if self.history_type == HistoryType::Cc {
-                        self.buffer[0] = self.history[self.history.len() - 1];
-
-                        os::send_key(true, korean::utf16_jongsung(self.history[self.history.len() - 2]));
-
-                        self.mode = CharType::Jongsung;
-                        self.prev = None;
-                        self.buffer[1] = data.2;
-    
-                        os::send_key(false, korean::assemble(self.history[self.history.len() - 1], data.2, 0));
-    
-                        self.history_type = HistoryType::Ab;
-
-                        let t = self.history[self.history.len() - 1];
-
-                        self.history.clear();
-                        self.history.push(t);
-                        self.history.push(data.2);
-                    } else {
-                        self.mode = CharType::Jongsung;
-                        self.prev = None;
-                        self.buffer[1] = data.2;
-    
-                        os::send_key(true, korean::assemble(self.buffer[0], data.2, 0));
-    
-                        self.history_type = HistoryType::Ab;
-    
-                        self.history.push(data.2);
-                    }
-                }
-            }
-            (CharType::Jongsung, false) => {
-                let data = korean::KOR_MAP.get(&key).unwrap();
-
-                if data.0 == CharType::Jungsung {
-                    if let Some(prev) = self.prev.take() {
-                        if prev.3 & data.4 != 0 {
-                            let jungsung = korean::assemble_jungsung(prev.5, data.5);
-                            self.buffer[1] = jungsung;
-
-                            os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], 0));
-
-                            self.history_type = HistoryType::Abb;
-
-                            self.history.push(data.5);
-
-                            return
+                        if self.buf.strlen() == 0 {
+                            HookResult::Pass
+                        } else {
+                            self.send(true);
+                            HookResult::Block
                         }
                     }
-
-                    self.mode = CharType::Chosung;
-                    self.handler(key, false);
                 } else {
-                    self.mode = CharType::JongsungFinal;
-                    self.prev = Some(data);
-                    self.buffer[2] = data.5;
-
-                    os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], data.5 + 1));
-
-                    self.history_type = match self.history_type {
-                        HistoryType::Ab => HistoryType::Abc,
-                        HistoryType::Abb => HistoryType::Abbc,
-                        _ => unreachable!()
-                    };
-
-                    self.history.push(data.5);
-                }
-            }
-            (CharType::Jongsung, true) => {
-                let data = korean::KOR_MAP_SHIFT.get(&key).unwrap();
-
-                if !data.1 {
-                    self.handler(key, false);
-
-                    return
-                }
-
-                if data.0 == CharType::Jungsung {
-                    self.mode = CharType::Chosung;
-                    self.handler(key, true);
-                } else {
-                    self.mode = CharType::JongsungFinal;
-                    self.prev = None;
-                    self.buffer[2] = data.2;
-
-                    os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], data.2 + 1));
-
-                    self.history_type = match self.history_type {
-                        HistoryType::Ab => HistoryType::Abc,
-                        HistoryType::Abb => HistoryType::Abbc,
-                        _ => unreachable!()
-                    };
-
-                    self.history.push(data.2);
-                }
-            }
-            (CharType::JongsungFinal, false) => {
-                let data = korean::KOR_MAP.get(&key).unwrap();
-
-                if data.0 == CharType::Chosung {
-                    if let Some(prev) = self.prev.take() {
-                        if prev.1 & data.2 != 0 {
-                            let jongsung = korean::assemble_jongsung(prev.5, data.5);
-                            self.buffer[2] = jongsung;
-                            self.buffer[3] = prev.5;
-                            self.prev = Some(data);
-
-                            os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], jongsung + 1));
-                            
-                            self.history_type = match self.history_type {
-                                HistoryType::Abc => HistoryType::Abcc,
-                                HistoryType::Abbc => HistoryType::Abbcc,
-                                _ => unreachable!()
-                            };
-
-                            self.history.push(data.5);
-
-                            return
-                        }
+                    if !keys::is_control(key) {
+                        self.buf.clear();
                     }
-
-                    self.mode = CharType::Chosung;
-                    self.handler(key, false);
-                } else {
-                    if self.prev.is_some() && self.buffer[2] != self.prev.unwrap().5 {
-                        os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], self.buffer[3] + 1));
-
-                        self.buffer[0] = self.prev.unwrap().5;
-                        self.mode = CharType::Jongsung;
-                        self.prev = Some(data);
-                        self.buffer[1] = data.5;
-                        
-                        os::send_key(false, korean::assemble(self.buffer[0], data.5, 0));
-
-                        self.history_type = HistoryType::Ab;
-
-                        self.history.clear();
-                        self.history.push(self.buffer[0]);
-                        self.history.push(data.5);
-                    } else {
-                        os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], 0));
-                        
-                        self.buffer[0] = self.buffer[2];
-                        self.mode = CharType::Jongsung;
-                        self.prev = Some(data);
-                        self.buffer[1] = data.5;
     
-                        os::send_key(false, korean::assemble(self.buffer[0], data.5, 0));
-
-                        self.history_type = HistoryType::Ab;
-
-                        self.history.clear();
-                        self.history.push(self.buffer[0]);
-                        self.history.push(data.5);
-                    }
+                    HookResult::Pass
                 }
+            } else {
+                HookResult::Pass
             }
-            (CharType::JongsungFinal, true) => {
-                let data = korean::KOR_MAP_SHIFT.get(&key).unwrap();
-
-                if !data.1 {
-                    self.handler(key, false);
-
-                    return
-                }
-
-                if data.0 == CharType::Chosung {
-                    self.mode = CharType::Chosung;
-                    self.handler(key, false);
-                } else {
-                    os::send_key(true, korean::assemble(self.buffer[0], self.buffer[1], 0));
-                    
-                    self.buffer[0] = self.buffer[2];
-                    self.mode = CharType::Jongsung;
-                    self.prev = None;
-                    self.buffer[1] = data.2;
-
-                    os::send_key(false, korean::assemble(self.buffer[0], data.2, 0));
-
-                    self.history_type = HistoryType::Ab;
-
-                    self.history.clear();
-                    self.history.push(self.buffer[0]);
-                    self.history.push(data.2);
-                }
-            }
+        } else {
+            HookResult::Pass
         }
     }
 
@@ -446,204 +235,7 @@ impl Patcher {
             let mut patcher = patcher.borrow_mut();
             let patcher = patcher.as_mut().unwrap();
 
-            if !os::is_ingame() {
-                return HookResult::Pass
-            }
-    
-            if key == keys::F11 {
-                IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::SeqCst), Ordering::SeqCst);
-                
-                patcher.mode = CharType::Chosung;
-                patcher.buffer = [0; 4];
-    
-                patcher.history_type = HistoryType::Null;
-    
-                if patcher.settings.show_overlay.load(Ordering::Relaxed) {
-                    os::toggle_fullscreen_custom();
-
-                    return HookResult::Block
-                }
-    
-                return HookResult::Pass
-            }
-    
-            if patcher.settings.block_kr_toggle_ingame.load(Ordering::Relaxed) && key == keys::KoreanToggle {
-                if patcher.settings.korean_toggle_key.load(Ordering::Relaxed) == keys::KoreanToggle {
-                    if !chat_opened!() {
-                        return HookResult::Block
-                    }
-                } else {
-                    return HookResult::Block
-                }
-            }
-    
-            if !chat_opened!() && (key == patcher.settings.chat_open_key.load(Ordering::Relaxed) || key == patcher.settings.cmd_open_key.load(Ordering::Relaxed)) {
-                chat_opened!(true);
-    
-                HookResult::Pass
-            } else if chat_opened!() {
-                if key == patcher.settings.korean_toggle_key.load(Ordering::Relaxed) {
-                    korean_mode!(!korean_mode!());
-        
-                    if korean_mode!() == false {
-                        patcher.mode = CharType::Chosung;
-                        patcher.buffer = [0; 4];
-    
-                        patcher.history_type = HistoryType::Null;
-                    }
-        
-                    if patcher.settings.korean_toggle_key.load(Ordering::Relaxed) != keys::KoreanToggle {
-                        return HookResult::Pass
-                    } else {
-                        return HookResult::Block
-                    }
-                }
-                
-                if os::ctrl_pressed() {
-                    match key {
-                        keys::V | keys::A => {
-                            patcher.mode = CharType::Chosung;
-                            patcher.buffer = [0; 4];
-    
-                            patcher.history_type = HistoryType::Null;
-                        }
-                        _ => ()
-                    }
-                    
-                    return HookResult::Pass
-                }
-        
-                if key == keys::Enter || key == keys::ESC {
-                    patcher.mode = CharType::Chosung;
-                    patcher.buffer = [0; 4];
-                    chat_opened!(false);
-                    
-                    patcher.history_type = HistoryType::Null;
-                    
-                    if patcher.settings.auto_disable_korean.load(Ordering::Relaxed) {
-                        korean_mode!(false);
-                    }
-                    
-                    return HookResult::Pass
-                } else if keys::is_arrow(key) {
-                    patcher.mode = CharType::Chosung;
-                    patcher.buffer = [0; 4];
-                    
-                    patcher.history_type = HistoryType::Null;
-                    
-                    return HookResult::Pass
-                }
-        
-                if korean_mode!() {
-                    if korean::is_mappable(key) {
-                        patcher.handler(key, os::is_shift());
-            
-                        HookResult::Block
-                    } else if key == keys::Backspace {
-                        if patcher.history_type == HistoryType::Null {
-                            HookResult::Pass
-                        } else {
-                            patcher.history.pop();
-    
-                            let mut ret = HookResult::Block;
-    
-                            patcher.history_type = match patcher.history_type {
-                                HistoryType::Cc | HistoryType::Ab => {
-                                    let id = patcher.history[0];
-    
-                                    os::send_key(true, korean::utf16_jongsung(id));
-                                    
-                                    patcher.mode = CharType::Jungsung;
-                                    patcher.buffer[0] = id;
-                                    
-                                    patcher.prev = Some(korean::KOR_MAP.values().find(|data| data.0 == CharType::Chosung && data.5 == id).unwrap());
-                                    
-                                    HistoryType::A
-                                }
-                                HistoryType::Bb => {
-                                    let id = patcher.history[0];
-    
-                                    os::send_key(true, korean::utf16_jongsung(id));
-                                    
-                                    patcher.mode = CharType::Chosung;
-                                    patcher.buffer[0] = id;
-    
-                                    patcher.prev = Some(korean::KOR_MAP.values().find(|data| data.0 == CharType::Jungsung && data.5 == id).unwrap());
-    
-                                    HistoryType::B
-                                }
-                                HistoryType::Abb | HistoryType::Abc => {
-                                    let id0 = patcher.history[0];
-                                    let id1 = patcher.history[1];
-    
-                                    os::send_key(true, korean::assemble(id0, id1, 0));
-                                    
-                                    patcher.mode = CharType::Jongsung;
-                                    patcher.buffer[0] = id0;
-                                    patcher.buffer[1] = id1;
-    
-                                    patcher.prev = Some(korean::KOR_MAP.values().find(|data| data.0 == CharType::Jungsung && data.5 == id1).unwrap());
-    
-                                    HistoryType::Ab
-                                }
-                                HistoryType::Abbc => {
-                                    let id0 = patcher.history[0];
-                                    let id1 = korean::assemble_jungsung(patcher.history[1], patcher.history[2]);
-    
-                                    os::send_key(true, korean::assemble(id0, id1, 0));
-                                    
-                                    patcher.mode = CharType::Jongsung;
-                                    patcher.buffer[0] = id0;
-                                    patcher.buffer[1] = id1;
-    
-                                    patcher.prev = Some(korean::KOR_MAP.values().find(|data| data.0 == CharType::Jungsung && data.5 == id1).unwrap());
-    
-                                    HistoryType::Abb
-                                }
-                                HistoryType::Abcc => {
-                                    os::send_key(true, korean::assemble(patcher.history[0], patcher.history[1], patcher.history[2] + 1));
-                                    
-                                    patcher.mode = CharType::JongsungFinal;
-                                    patcher.buffer[2] = patcher.history[2];
-    
-                                    patcher.prev = Some(korean::KOR_MAP.values().find(|data| data.0 == CharType::Chosung && data.5 == patcher.history[2]).unwrap());
-    
-                                    HistoryType::Abc
-                                }
-                                HistoryType::Abbcc => {
-                                    let id1 = korean::assemble_jungsung(patcher.history[1], patcher.history[2]);
-    
-                                    os::send_key(true, korean::assemble(patcher.history[0], id1, patcher.history[3] + 1));
-                                    
-                                    patcher.mode = CharType::JongsungFinal;
-                                    patcher.prev = Some(korean::KOR_MAP.values().find(|data| data.0 == CharType::Chosung && data.5 == patcher.history[3]).unwrap());
-                                   
-                                    HistoryType::Abbc
-                                }
-                                _ => {
-                                    ret = HookResult::Pass;
-                                    HistoryType::Null
-                                }
-                            };
-    
-                            ret
-                        }
-                    } else {
-                        if !keys::is_control(key) {
-                            patcher.mode = CharType::Chosung;
-                            patcher.buffer = [0; 4];
-                            
-                            patcher.history_type = HistoryType::Null;
-                        }
-        
-                        HookResult::Pass
-                    }
-                } else {
-                    HookResult::Pass
-                }
-            } else {
-                HookResult::Pass
-            }
+            patcher.handler(key)
         })
     }
 }

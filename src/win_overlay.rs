@@ -246,7 +246,7 @@ impl Overlay {
                         
                         win32::toggle_fullscreen_custom();
 
-                        patcher::IS_MC_FULLSCREEN.store(true, Ordering::Relaxed);
+                        patcher::IS_MC_FULLSCREEN.store(true, Ordering::SeqCst);
 
                         if err != 0 {
                             return true
@@ -258,7 +258,7 @@ impl Overlay {
                     return true
                 }
             } else {
-                patcher::IS_MC_FULLSCREEN.store(false, Ordering::Relaxed);
+                patcher::IS_MC_FULLSCREEN.store(false, Ordering::SeqCst);
             }
 
             self.load_textures(&mut *raw_device);
@@ -268,7 +268,7 @@ impl Overlay {
             self.d3d = Some(&mut *d3d);
             *self.device.lock().unwrap() = Some(&mut *raw_device);
 
-            OVERLAY.store(self, Ordering::Relaxed);
+            OVERLAY.store(self, Ordering::SeqCst);
 
             while GetMessageW(&mut msg, wnd, 0, 0) > 0 {
                 TranslateMessage(&mut msg);

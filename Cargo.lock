@@ -1326,6 +1326,7 @@ dependencies = [
  "lazy_static",
  "phf 0.10.1",
  "png 0.17.5",
+ "sejong",
  "tauri",
  "tauri-build",
  "winapi",
@@ -2558,6 +2559,12 @@ dependencies = [
  "core-foundation-sys",
  "libc",
 ]
+
+[[package]]
+name = "sejong"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "396325c43094c79eda56f7dbdee1a0f87a5cb4076a25a641a921e290f096b4b5"
 
 [[package]]
 name = "selectors"

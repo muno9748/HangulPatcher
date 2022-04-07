@@ -119,14 +119,14 @@ pub fn toggle_fullscreen_custom() {
             return
         }
 
-        if LAST_RECT.load(Ordering::Relaxed) as usize == 0 {
+        if LAST_RECT.load(Ordering::SeqCst) as usize == 0 {
             let rect = Box::leak(Box::new(mem::zeroed::<RECT>()));
             let ptr = rect as *mut RECT;
         
-            LAST_RECT.store(ptr, Ordering::Relaxed);
+            LAST_RECT.store(ptr, Ordering::SeqCst);
         }
 
-        let rect = LAST_RECT.load(Ordering::Relaxed);
+        let rect = LAST_RECT.load(Ordering::SeqCst);
         let hwnd = GetForegroundWindow();
         let dw_style = GetWindowLongW(hwnd, GWL_STYLE);
 
@@ -173,14 +173,14 @@ pub fn find_and_toggle_fullscreen_custom() {
 
         let hwnd = hwnd.unwrap_unchecked();
 
-        if LAST_RECT.load(Ordering::Relaxed) as usize == 0 {
+        if LAST_RECT.load(Ordering::SeqCst) as usize == 0 {
             let rect = Box::leak(Box::new(mem::zeroed::<RECT>()));
             let ptr = rect as *mut RECT;
 
-            LAST_RECT.store(ptr, Ordering::Relaxed);
+            LAST_RECT.store(ptr, Ordering::SeqCst);
         }
 
-        let rect = LAST_RECT.load(Ordering::Relaxed);
+        let rect = LAST_RECT.load(Ordering::SeqCst);
         let dw_style = GetWindowLongW(hwnd, GWL_STYLE);
 
         if dw_style & WS_OVERLAPPEDWINDOW as i32 != 0 {
@@ -325,7 +325,7 @@ pub fn is_ingame() -> bool {
         let result = result && is_cname_mc(cname);
 
         if result {
-            MC_HWND.store(hwnd as usize, Ordering::Relaxed);
+            MC_HWND.store(hwnd as usize, Ordering::SeqCst);
         }
 
         result

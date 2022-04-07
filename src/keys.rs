@@ -27,3 +27,7 @@ pub fn is_control(key: u8) -> bool {
 pub fn is_arrow(key: u8) -> bool {
     0x25 <= key && key <= 0x28
 }
+
+pub fn is_kor_mappable(key: u8) -> bool {
+    64 < key && key < 91
+}

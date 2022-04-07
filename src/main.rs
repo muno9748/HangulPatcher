@@ -3,12 +3,10 @@
     windows_subsystem = "windows"
 )]
 
-mod history_type;
 mod win_overlay;
-mod char_type;
 mod settings;
 mod patcher;
-mod korean;
+mod buffer;
 mod win32;
 mod keys;
 
