@@ -38,7 +38,7 @@ pub(crate) fn msg_loop(cb: impl Fn(&mut Event) -> ()) {
     unsafe {
         let mut msg: MSG = std::mem::zeroed();
         
-        LOOP_ID.store(GetCurrentThreadId(), Ordering::SeqCst);
+        LOOP_ID.store(GetCurrentThreadId(), Ordering::Relaxed);
     
         while GetMessageA(&mut msg, 0 as _, 0, 0) > 0 {
             if msg.message == 0x400 {
@@ -59,7 +59,7 @@ pub(crate) fn send_msg(ev: Event) {
     unsafe {
         let ev = Box::leak(Box::new(ev));
 
-        user::PostThreadMessageA(LOOP_ID.load(Ordering::SeqCst), 0x400, 0, ev as *mut _ as isize);
+        user::PostThreadMessageA(LOOP_ID.load(Ordering::Relaxed), 0x400, 0, ev as *mut _ as isize);
     }
 }
 
@@ -119,14 +119,14 @@ pub fn toggle_fullscreen_custom() {
             return
         }
 
-        if LAST_RECT.load(Ordering::SeqCst) as usize == 0 {
+        if LAST_RECT.load(Ordering::Relaxed) as usize == 0 {
             let rect = Box::leak(Box::new(mem::zeroed::<RECT>()));
             let ptr = rect as *mut RECT;
         
-            LAST_RECT.store(ptr, Ordering::SeqCst);
+            LAST_RECT.store(ptr, Ordering::Relaxed);
         }
 
-        let rect = LAST_RECT.load(Ordering::SeqCst);
+        let rect = LAST_RECT.load(Ordering::Relaxed);
         let hwnd = GetForegroundWindow();
         let dw_style = GetWindowLongW(hwnd, GWL_STYLE);
 
@@ -173,14 +173,14 @@ pub fn find_and_toggle_fullscreen_custom() {
 
         let hwnd = hwnd.unwrap_unchecked();
 
-        if LAST_RECT.load(Ordering::SeqCst) as usize == 0 {
+        if LAST_RECT.load(Ordering::Relaxed) as usize == 0 {
             let rect = Box::leak(Box::new(mem::zeroed::<RECT>()));
             let ptr = rect as *mut RECT;
 
-            LAST_RECT.store(ptr, Ordering::SeqCst);
+            LAST_RECT.store(ptr, Ordering::Relaxed);
         }
 
-        let rect = LAST_RECT.load(Ordering::SeqCst);
+        let rect = LAST_RECT.load(Ordering::Relaxed);
         let dw_style = GetWindowLongW(hwnd, GWL_STYLE);
 
         if dw_style & WS_OVERLAPPEDWINDOW as i32 != 0 {
@@ -325,7 +325,7 @@ pub fn is_ingame() -> bool {
         let result = result && is_cname_mc(cname);
 
         if result {
-            MC_HWND.store(hwnd as usize, Ordering::SeqCst);
+            MC_HWND.store(hwnd as usize, Ordering::Relaxed);
         }
 
         result

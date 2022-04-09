@@ -18,19 +18,19 @@ thread_local! {
 
 macro_rules! chat_opened {
     () => {
-        crate::patcher::CHAT_OPENED.load(std::sync::atomic::Ordering::SeqCst)
+        crate::patcher::CHAT_OPENED.load(std::sync::atomic::Ordering::Relaxed)
     };
     ($v: expr) => {
-        crate::patcher::CHAT_OPENED.store($v, std::sync::atomic::Ordering::SeqCst)
+        crate::patcher::CHAT_OPENED.store($v, std::sync::atomic::Ordering::Relaxed)
     };
 }
 
 macro_rules! korean_mode {
     () => {
-        crate::patcher::KOREAN_MODE.load(std::sync::atomic::Ordering::SeqCst)
+        crate::patcher::KOREAN_MODE.load(std::sync::atomic::Ordering::Relaxed)
     };
     ($v: expr) => {
-        crate::patcher::KOREAN_MODE.store($v, std::sync::atomic::Ordering::SeqCst)
+        crate::patcher::KOREAN_MODE.store($v, std::sync::atomic::Ordering::Relaxed)
     };
 }
 
@@ -78,7 +78,7 @@ impl Patcher {
 
             overlay.stop();
 
-            if IS_MC_FULLSCREEN.load(Ordering::SeqCst) {
+            if IS_MC_FULLSCREEN.load(Ordering::Relaxed) {
                 os::find_and_toggle_fullscreen_custom();
             }
         }
@@ -115,11 +115,11 @@ impl Patcher {
         }
 
         if key == keys::F11 {
-            IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::SeqCst), Ordering::SeqCst);
+            IS_MC_FULLSCREEN.store(!IS_MC_FULLSCREEN.load(Ordering::Relaxed), Ordering::Relaxed);
             
             self.buf.clear();
 
-            if self.settings.show_overlay.load(Ordering::SeqCst) {
+            if self.settings.show_overlay.load(Ordering::Relaxed) {
                 os::toggle_fullscreen_custom();
 
                 return HookResult::Block
@@ -128,8 +128,8 @@ impl Patcher {
             return HookResult::Pass
         }
 
-        if self.settings.block_kr_toggle_ingame.load(Ordering::SeqCst) && key == keys::KoreanToggle {
-            if self.settings.korean_toggle_key.load(Ordering::SeqCst) == keys::KoreanToggle {
+        if self.settings.block_kr_toggle_ingame.load(Ordering::Relaxed) && key == keys::KoreanToggle {
+            if self.settings.korean_toggle_key.load(Ordering::Relaxed) == keys::KoreanToggle {
                 if !chat_opened!() {
                     return HookResult::Block
                 }
@@ -138,19 +138,19 @@ impl Patcher {
             }
         }
 
-        if !chat_opened!() && (key == self.settings.chat_open_key.load(Ordering::SeqCst) || key == self.settings.cmd_open_key.load(Ordering::SeqCst)) {
+        if !chat_opened!() && (key == self.settings.chat_open_key.load(Ordering::Relaxed) || key == self.settings.cmd_open_key.load(Ordering::Relaxed)) {
             chat_opened!(true);
 
             HookResult::Pass
         } else if chat_opened!() {
-            if key == self.settings.korean_toggle_key.load(Ordering::SeqCst) {
+            if key == self.settings.korean_toggle_key.load(Ordering::Relaxed) {
                 korean_mode!(!korean_mode!());
     
                 if korean_mode!() == false {
                     self.buf.clear();
                 }
     
-                if self.settings.korean_toggle_key.load(Ordering::SeqCst) != keys::KoreanToggle {
+                if self.settings.korean_toggle_key.load(Ordering::Relaxed) != keys::KoreanToggle {
                     return HookResult::Pass
                 } else {
                     return HookResult::Block
@@ -171,7 +171,7 @@ impl Patcher {
 
                 self.buf.clear();
                 
-                if self.settings.auto_disable_korean.load(Ordering::SeqCst) {
+                if self.settings.auto_disable_korean.load(Ordering::Relaxed) {
                     korean_mode!(false);
                 }
                 

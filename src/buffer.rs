@@ -6,7 +6,7 @@ struct UnsafeBuffer(pub Vec<u32>); // mem::size_of::<u32>() == mem::size_of::<Sy
 fn map_byte(b: u8, shift: bool) -> u8 {
     if shift {
         match b {
-            0x65 | 0x6f | 0x70 | 0x71 | 0x72 | 0x74 | 0x77 => b,
+            0x45 | 0x4f | 0x50 | 0x51 | 0x52 | 0x54 | 0x57 => b,
             _ => b + 32
         }
     } else {

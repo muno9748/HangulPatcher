@@ -52,7 +52,7 @@ unsafe extern "system" fn wnd_proc(hwnd: HWND, msg: u32, w: usize, l: isize) -> 
                 let hwnd = GetForegroundWindow();
 
                 if GetWindowLongW(hwnd, GWL_STYLE) & WS_OVERLAPPEDWINDOW as i32 == 0 && win32::is_fullscreen() {
-                    patcher::IS_MC_FULLSCREEN.store(false, Ordering::SeqCst);
+                    patcher::IS_MC_FULLSCREEN.store(false, Ordering::Relaxed);
 
                     let scan = MapVirtualKeyW(0x7a, 0);
 
@@ -246,7 +246,7 @@ impl Overlay {
                         
                         win32::toggle_fullscreen_custom();
 
-                        patcher::IS_MC_FULLSCREEN.store(true, Ordering::SeqCst);
+                        patcher::IS_MC_FULLSCREEN.store(true, Ordering::Relaxed);
 
                         if err != 0 {
                             return true
@@ -258,7 +258,7 @@ impl Overlay {
                     return true
                 }
             } else {
-                patcher::IS_MC_FULLSCREEN.store(false, Ordering::SeqCst);
+                patcher::IS_MC_FULLSCREEN.store(false, Ordering::Relaxed);
             }
 
             self.load_textures(&mut *raw_device);
@@ -268,7 +268,7 @@ impl Overlay {
             self.d3d = Some(&mut *d3d);
             *self.device.lock().unwrap() = Some(&mut *raw_device);
 
-            OVERLAY.store(self, Ordering::SeqCst);
+            OVERLAY.store(self, Ordering::Relaxed);
 
             while GetMessageW(&mut msg, wnd, 0, 0) > 0 {
                 TranslateMessage(&mut msg);
@@ -282,7 +282,7 @@ impl Overlay {
     pub fn stop(&mut self) {
         unsafe {
             if self.hwnd.is_some() {
-                OVERLAY.store(ptr::null_mut(), Ordering::SeqCst);
+                OVERLAY.store(ptr::null_mut(), Ordering::Relaxed);
 
                 DestroyWindow(self.hwnd.take().unwrap());
                 self.d3d.take().unwrap().Release();

@@ -158,7 +158,6 @@ fn main() {
             payload: None
         });
     });
-    
 
     app.run(move |_handle, event| match event {
         tauri::RunEvent::ExitRequested { .. } => {
