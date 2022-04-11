@@ -165,13 +165,13 @@ pub fn find_and_toggle_fullscreen_custom() {
     use user::*;
 
     unsafe {
-        let hwnd = get_mc_hwnd();
+        let hwnd = MC_HWND.load(Ordering::Relaxed);
 
-        if hwnd.is_none() {
-            return;
+        if hwnd == 0 {
+            return
         }
 
-        let hwnd = hwnd.unwrap_unchecked();
+        let hwnd = hwnd as HWND;
 
         if LAST_RECT.load(Ordering::Relaxed) as usize == 0 {
             let rect = Box::leak(Box::new(mem::zeroed::<RECT>()));
@@ -231,61 +231,6 @@ pub fn send_key(backspace: bool, utf16: u16) {
                 (user::KEYEVENTF_UNICODE | user::KEYEVENTF_KEYUP, utf16)
             ]);
         }
-    }
-}
-
-pub fn get_mc_hwnd() -> Option<HWND> {
-    unsafe extern "system" fn enumerator(hwnd: HWND, lp: isize) -> i32 {
-        if user::IsWindowVisible(hwnd) == 0 {
-            return 1
-        }
-
-        let length = user::GetWindowTextLengthW(hwnd);
-
-        if length == 0 {
-            return 1
-        }
-
-        let mut buf = vec![0u16; length as usize];
-        
-        let textw = user::GetWindowTextW(hwnd, buf.as_mut_ptr(), length);
-
-        if textw == 0 {
-            return 1
-        }
-
-        let title = String::from_utf16(&buf[0..(textw as usize)]).unwrap();
-        let result = is_title_mc(title);
-        
-        let mut buf = vec![0u16; 8];
-        let classw = user::GetClassNameW(hwnd, buf.as_mut_ptr(), 8);
-
-        if classw == 0 {
-            return 1
-        }
-
-        let cname = String::from_utf16(&buf[0..(classw as usize)]).unwrap();
-        let result = result && is_cname_mc(cname);
-
-        if result {
-            *(lp as *mut HWND) = hwnd;
-
-            return 0
-        } else {
-            return 1
-        }
-    }
-
-    let mut hwnd: HWND = ptr::null_mut();
-
-    unsafe {
-        user::EnumWindows(Some(enumerator), &mut hwnd as *mut HWND as isize);
-    }
-
-    if hwnd as usize == 0 {
-        None
-    } else {
-        Some(hwnd)
     }
 }
 
