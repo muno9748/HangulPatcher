@@ -10,7 +10,7 @@ mod buffer;
 mod win32;
 mod keys;
 
-use std::sync::{atomic::{AtomicBool, Ordering}, mpsc, Mutex};
+use std::{sync::{atomic::{AtomicBool, Ordering}, mpsc, Mutex}, time::Duration};
 
 use patcher::Patcher;
 use settings::Settings;
@@ -166,7 +166,7 @@ fn main() {
                 payload: None
             });
             
-            rx.recv().unwrap();
+            let _ = rx.recv_timeout(Duration::from_millis(1000));
         }
         _ => {}
     });

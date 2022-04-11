@@ -1,4 +1,4 @@
-const currentVersion = '3.0.5'
+const currentVersion = '3.0.6'
 
 const noKeySupport = (() => {
     // <span class="InvalidKeyDialog">해당 키는 지원되지 않습니다!</span>

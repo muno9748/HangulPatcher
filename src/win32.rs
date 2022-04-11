@@ -173,6 +173,10 @@ pub fn find_and_toggle_fullscreen_custom() {
 
         let hwnd = hwnd as HWND;
 
+        if IsWindow(hwnd) == 0 {
+            return
+        }
+
         if LAST_RECT.load(Ordering::Relaxed) as usize == 0 {
             let rect = Box::leak(Box::new(mem::zeroed::<RECT>()));
             let ptr = rect as *mut RECT;
